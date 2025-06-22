@@ -1,0 +1,29 @@
+:host {
+  padding: 8px;
+  display: block;
+}
+
+a.mat-list-item {
+  color: #202124 !important;
+  font-weight: 500;
+  border-radius: 25px !important;
+  margin-bottom: 4px !important;
+  padding: 0 16px !important;
+
+  mat-icon {
+    margin-right: 20px !important;
+    color: #5f6368;
+  }
+
+  &.active-link {
+    background-color: #f1f3f4;
+
+    mat-icon {
+      color: #202124;
+    }
+  }
+
+  &:hover:not(.active-link) {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
