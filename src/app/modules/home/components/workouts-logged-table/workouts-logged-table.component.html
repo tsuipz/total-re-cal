@@ -1,0 +1,14 @@
+<div class="workouts-container">
+  <div class="header">
+    <h2 class="title">Today's Workouts</h2>
+    <div class="actions">
+      <button mat-icon-button
+              class="add-button">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <app-logged-table [items]="workouts"
+                    [emptyMessage]="'No workouts logged yet'"></app-logged-table>
+</div>

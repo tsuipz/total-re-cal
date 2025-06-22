@@ -1,19 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { MealEntry } from '../../../../core/models/interfaces/meal.interface';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import {
+  LogEntry,
+  LoggedTableComponent,
+} from '@app/shared/components/logged-table/logged-table.component';
+
+const MUI = [MatButtonModule, MatIconModule];
+
+const COMPONENTS = [LoggedTableComponent];
 
 @Component({
   selector: 'app-meals-logged-table',
   templateUrl: './meals-logged-table.component.html',
   styleUrls: ['./meals-logged-table.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, ...MUI, ...COMPONENTS],
 })
 export class MealsLoggedTableComponent implements OnInit {
-  meals: MealEntry[] = [];
+  meals: LogEntry[] = [];
 
   ngOnInit(): void {
     this.meals = this.getMockMeals().sort(

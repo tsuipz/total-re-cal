@@ -1,0 +1,48 @@
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item-card {
+  background-color: #f6f6f6;
+  box-shadow: none;
+  border: 1px solid #e5e7eb;
+
+  .item-card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+  }
+}
+
+.item-name {
+  font-weight: 500;
+}
+
+.item-details {
+  font-size: 0.875rem;
+  color: #6b7280; // text-gray-500
+}
+
+.item-calories {
+  font-size: 1.125rem;
+  font-weight: 600;
+
+  &.positive {
+    color: #059669; // text-green-600
+  }
+
+  &.negative {
+    color: #ef4444; // text-red-600
+  }
+}
+
+.no-items-message {
+  text-align: center;
+  padding: 2rem 0;
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  border-radius: 0.5rem;
+}

@@ -3,7 +3,7 @@
   padding: 1.5rem;
 }
 
-.meals-container {
+.workouts-container {
   margin-bottom: 1.5rem;
 }
 
@@ -23,13 +23,8 @@
   display: flex;
   gap: 0.5rem;
 
-  .camera-button {
-    background-color: #2563eb; // bg-blue-600
-    color: white;
-  }
-
   .add-button {
-    background-color: #4b5563; // bg-gray-600
+    background-color: #f97316; // bg-orange-500
     color: white;
   }
 }

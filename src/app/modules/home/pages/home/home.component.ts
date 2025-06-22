@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CalorieSummaryComponent } from '../../components/calorie-summary/calorie-summary.component';
 import { MealsLoggedTableComponent } from '../../components/meals-logged-table/meals-logged-table.component';
-import { WorkoutsLoggedComponent } from '../../components/workouts-logged/workouts-logged.component';
+import { WorkoutsLoggedTableComponent } from '../../components/workouts-logged-table/workouts-logged-table.component';
 
 @Component({
   selector: 'app-home',
@@ -11,7 +11,7 @@ import { WorkoutsLoggedComponent } from '../../components/workouts-logged/workou
   imports: [
     CalorieSummaryComponent,
     MealsLoggedTableComponent,
-    WorkoutsLoggedComponent,
+    WorkoutsLoggedTableComponent,
   ],
 })
 export class HomeComponent {}

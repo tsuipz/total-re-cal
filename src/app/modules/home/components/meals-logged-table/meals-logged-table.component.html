@@ -13,32 +13,6 @@
     </div>
   </div>
 
-  <div *ngIf="meals.length > 0; else noMeals"
-       class="meals-list">
-    <mat-card *ngFor="let meal of meals"
-              class="meal-card">
-      <mat-card-content class="meal-card-content">
-        <div>
-          <div class="meal-name">{{ meal.name }}</div>
-          <div class="meal-details">
-            {{ meal.createdAt | date : 'shortTime' }} •
-            {{ meal.category | titlecase }} •
-            <ng-container [ngSwitch]="meal.source">
-              <span *ngSwitchCase="'photo'">🤖 AI detected</span>
-              <span *ngSwitchCase="'manual'">✏️ Manual entry</span>
-            </ng-container>
-          </div>
-        </div>
-        <div class="meal-calories">
-          {{ meal.calories }}
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <ng-template #noMeals>
-    <div class="no-meals-message">
-      <p>No meals logged yet</p>
-    </div>
-  </ng-template>
+  <app-logged-table [items]="meals"
+                    [emptyMessage]="'No meals logged yet'"></app-logged-table>
 </div>
