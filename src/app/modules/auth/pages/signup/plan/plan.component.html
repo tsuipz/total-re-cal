@@ -53,7 +53,7 @@
           </div>
 
           <div class="plan-stat">
-            <span class="stat-value">~{{ plan.estimatedDuration }} weeks</span>
+            <span class="stat-value">~{{ plan.estimatedDuration | number:'1.0-0' }} weeks</span>
             <span class="stat-label">estimated duration</span>
           </div>
         </div>

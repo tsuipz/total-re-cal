@@ -7,6 +7,7 @@ import { mapResponse } from '@ngrx/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from '@app/core/services/user.service';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class AuthEffects {
@@ -14,6 +15,7 @@ export class AuthEffects {
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
 
   /**
    * Login effect
@@ -86,6 +88,60 @@ export class AuthEffects {
       )
     );
   });
+
+  /**
+   * Save user profile effect
+   */
+  public saveUserProfile$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AuthActions.saveUserProfile),
+      switchMap(({ user }) =>
+        from(this.userService.saveUserProfile(user)).pipe(
+          mapResponse({
+            next: (user) => AuthActions.saveUserProfileSuccess({ user }),
+            error: (error: HttpErrorResponse) =>
+              AuthActions.saveUserProfileFailure({ error }),
+          })
+        )
+      )
+    );
+  });
+
+  /**
+   * Save User Profile Success effect - Show success message and navigate
+   */
+  public saveUserProfileSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.saveUserProfileSuccess),
+        tap(() => {
+          this.snackBar.open('Profile created successfully!', 'Close', {
+            duration: 3000,
+          });
+          this.router.navigate(['/home']);
+        })
+      );
+    },
+    { dispatch: false }
+  );
+
+  /**
+   * Save User Profile Failure effect - Show error message
+   */
+  public saveUserProfileFailure$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.saveUserProfileFailure),
+        tap(({ error }) => {
+          this.snackBar.open(error.error.message, 'Close', {
+            duration: 5000,
+            panelClass: 'error-snackbar',
+          });
+        })
+      );
+    },
+    { dispatch: false }
+  );
 
   /**
    * Get User Profile Failure effect

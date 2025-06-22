@@ -3,14 +3,18 @@ import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
 import * as AuthActions from './auth.actions';
 
-export const adapter: EntityAdapter<User> = createEntityAdapter<User>();
+export const adapter: EntityAdapter<User> = createEntityAdapter<User>({
+  selectId: (user: User) => user.uid,
+});
 
 export interface State extends EntityState<User> {
   currentUserId: string | null;
+  isLoading: boolean;
 }
 
 export const initialState: State = adapter.getInitialState({
   currentUserId: null,
+  isLoading: false,
 });
 
 export const authReducer = createReducer(
@@ -43,5 +47,13 @@ export const authReducer = createReducer(
   on(AuthActions.loadUsersByIdsSuccess, (state, { users }): State => {
     return adapter.upsertMany(users, state);
   }),
-  on(AuthActions.loadUsersByIdsFailure, (state): State => ({ ...state }))
+  on(AuthActions.loadUsersByIdsFailure, (state): State => ({ ...state })),
+  /**
+   * Save user profile actions
+   */
+  on(AuthActions.saveUserProfile, (state): State => ({ ...state })),
+  on(AuthActions.saveUserProfileSuccess, (state, { user }): State => {
+    return adapter.upsertOne(user, { ...state, currentUserId: user.uid });
+  }),
+  on(AuthActions.saveUserProfileFailure, (state): State => ({ ...state }))
 );
