@@ -1,1 +1,14 @@
-<router-outlet></router-outlet>
+<mat-sidenav-container class="h-screen">
+  <mat-sidenav #sidenav
+               [mode]="isMobile ? 'over' : 'side'"
+               [opened]="!isMobile"
+               fixedInViewport="true">
+    <app-sidebar (closeSidebar)="sidenav.close()"></app-sidebar>
+  </mat-sidenav>
+
+  <mat-sidenav-content [class.with-bottom-nav]="isMobile">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<app-bottom-nav-bar *ngIf="isMobile"></app-bottom-nav-bar>
