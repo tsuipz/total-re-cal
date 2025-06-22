@@ -73,11 +73,18 @@
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+          }
         }
       }
     }
   },
   "cli": {
-    "analytics": "73408e0f-d261-4a1e-8667-3fcd253b11a9"
+    "analytics": "73408e0f-d261-4a1e-8667-3fcd253b11a9",
+    "schematicCollections": ["angular-eslint"]
   }
 }
