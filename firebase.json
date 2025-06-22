@@ -1,7 +1,11 @@
 {
   "hosting": {
-    "public": "dist/total-re-cal/browser",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
     "rewrites": [
       {
         "source": "**",
