@@ -16,6 +16,7 @@ import { provideEffects } from '@ngrx/effects';
 import { provideRouterStore, routerReducer } from '@ngrx/router-store';
 import { AuthEffects } from './core/stores/auth/auth.effects';
 import { authReducer } from './core/stores/auth/auth.reducers';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 const REDUCERS = {
   auth: authReducer,
@@ -35,5 +36,6 @@ export const appConfig: ApplicationConfig = {
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideEffects(EFFECTS),
     provideRouterStore(),
+    provideNativeDateAdapter(),
   ],
 };

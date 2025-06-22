@@ -96,6 +96,8 @@ export class MealsLoggedTableComponent implements OnInit {
       categoryPlaceholder: 'e.g., Breakfast, Lunch, Snack',
       caloriesLabel: 'Calories',
       caloriesPlaceholder: 'e.g., 350',
+      datetimeLabel: 'Date',
+      timeLabel: 'Time',
       submitButtonText: 'Add Meal',
     };
   }

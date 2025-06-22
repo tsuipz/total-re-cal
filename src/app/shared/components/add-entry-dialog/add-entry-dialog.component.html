@@ -42,6 +42,27 @@
         {{ data.caloriesLabel }} must be at least 0
       </mat-error>
     </mat-form-field>
+    <div class="datetime-container">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ data.datetimeLabel }}</mat-label>
+        <input matInput
+               [matDatepicker]="datepicker"
+               formControlName="datetime">
+        <mat-datepicker-toggle [for]="datepicker"
+                               matSuffix></mat-datepicker-toggle>
+        <mat-datepicker #datepicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ data.timeLabel }}</mat-label>
+        <input matInput
+               [matTimepicker]="timepicker"
+               formControlName="datetime">
+        <mat-timepicker-toggle [for]="timepicker"
+                               matSuffix></mat-timepicker-toggle>
+        <mat-timepicker #timepicker></mat-timepicker>
+      </mat-form-field>
+    </div>
   </form>
 </mat-dialog-content>
 
