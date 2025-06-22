@@ -1,0 +1,92 @@
+<form [formGroup]="planForm"
+      class="plan-form">
+  <!-- Goal Weight Section -->
+  <div class="form-section">
+    <h3>What's your goal weight?</h3>
+    <p class="section-description">
+      This helps us calculate your daily calorie target and track your progress.
+    </p>
+
+    <mat-form-field appearance="outline"
+                    class="full-width">
+      <mat-label>Goal Weight</mat-label>
+      <input matInput
+             type="number"
+             formControlName="goalWeight"
+             placeholder="Enter your goal weight"
+             min="50"
+             max="500">
+      <mat-error *ngIf="planForm.controls.goalWeight.hasError('required')">
+        Goal weight is required
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <!-- Plan Selection Section -->
+  <div class="form-section"
+       *ngIf="planForm.controls.goalWeight.value">
+    <h3>Choose your weight loss plan</h3>
+    <p class="section-description">
+      Select a plan that fits your lifestyle and goals. Each plan has different weekly weight loss targets.
+    </p>
+
+    <div class="plans-container">
+      <div *ngFor="let plan of calculatedWeightLossPlan"
+           class="plan-card"
+           [class.selected]="planForm.controls.goalPlan.value === plan.type"
+           (click)="selectPlan(plan.type)"
+           tabindex="0"
+           role="button">
+
+        <div class="plan-header">
+          <h4 class="plan-title">{{ plan.type | titlecase }}</h4>
+          <mat-icon class="check-icon"
+                    *ngIf="planForm.controls.goalPlan.value === plan.type">
+            check_circle
+          </mat-icon>
+        </div>
+
+        <div class="plan-details">
+          <div class="plan-stat">
+            <span class="stat-value">{{ plan.weeklyLoss }} lbs</span>
+            <span class="stat-label">per week</span>
+          </div>
+
+          <div class="plan-stat">
+            <span class="stat-value">~{{ plan.estimatedDuration }} weeks</span>
+            <span class="stat-label">estimated duration</span>
+          </div>
+        </div>
+
+        <p class="plan-description">{{ plan.description }}</p>
+      </div>
+    </div>
+
+    <mat-error *ngIf="planForm.controls.goalPlan.hasError('required') && planForm.controls.goalPlan.touched"
+               class="plan-error">
+      Please select a weight loss plan
+    </mat-error>
+  </div>
+
+  <!-- Selected Plan Summary -->
+  <div *ngIf="selectedPlanData && goalWeight"
+       class="plan-summary">
+    <h4>Your Plan Summary</h4>
+    <div class="summary-content">
+      <p>
+        <strong>Goal Weight:</strong> {{ goalWeight }} lbs
+      </p>
+      <p>
+        <strong>Weekly Loss:</strong> {{ selectedPlanData.weeklyLoss }} lbs
+      </p>
+      <p>
+        <strong>Estimated Duration:</strong> {{ selectedPlanData.estimatedDuration | number: '1.0-0' }} weeks
+      </p>
+      <p *ngIf="firstWeekCalorieTargetRange">
+        <strong>First Week Estimated Calories Range:</strong>
+        {{ firstWeekCalorieTargetRange.min | number: '1.0-0' }} -
+        {{ firstWeekCalorieTargetRange.max | number: '1.0-0' }}
+      </p>
+    </div>
+  </div>
+</form>
