@@ -2,16 +2,18 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as AuthActions from './auth.actions';
 import { AuthService } from '@app/core/services/auth.service';
-import { from, switchMap } from 'rxjs';
+import { from, switchMap, tap } from 'rxjs';
 import { mapResponse } from '@ngrx/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from '@app/core/services/user.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthEffects {
   private actions$ = inject(Actions);
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private router = inject(Router);
 
   /**
    * Login effect
@@ -84,4 +86,17 @@ export class AuthEffects {
       )
     );
   });
+
+  /**
+   * Get User Profile Failure effect
+   */
+  public getUserProfileFailure$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.getUserProfileFailure),
+        tap(() => this.router.navigate(['auth', 'signup']))
+      );
+    },
+    { dispatch: false }
+  );
 }

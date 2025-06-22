@@ -32,7 +32,7 @@ export const authReducer = createReducer(
    */
   on(AuthActions.getUserProfile, (state): State => ({ ...state })),
   on(AuthActions.getUserProfileSuccess, (state, { user }): State => {
-    return adapter.addOne(user, { ...state, currentUserId: user.id });
+    return adapter.addOne(user, { ...state, currentUserId: user.uid });
   }),
   on(AuthActions.getUserProfileFailure, (state): State => ({ ...state })),
 
@@ -43,5 +43,5 @@ export const authReducer = createReducer(
   on(AuthActions.loadUsersByIdsSuccess, (state, { users }): State => {
     return adapter.upsertMany(users, state);
   }),
-  on(AuthActions.loadUsersByIdsFailure, (state): State => ({ ...state })),
+  on(AuthActions.loadUsersByIdsFailure, (state): State => ({ ...state }))
 );

@@ -18,8 +18,8 @@ export const authGuard: CanActivateFn = async () => {
     await firstValueFrom(
       store.select(AuthSelectors.selectCurrentUserId).pipe(
         filter((userId) => userId !== null),
-        take(1),
-      ),
+        take(1)
+      )
     );
     return true;
   } else {

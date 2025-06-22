@@ -39,3 +39,4 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TOTAL_RE_CAL_P0 }}
           projectId: total-re-cal-p0
+          channelId: pr-${{ github.event.number }}
