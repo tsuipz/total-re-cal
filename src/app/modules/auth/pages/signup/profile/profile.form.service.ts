@@ -1,16 +1,34 @@
 import { inject, Injectable } from '@angular/core';
 import {
+  AbstractControl,
   FormBuilder,
   FormControl,
   FormGroup,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { Gender, UnitSystem } from '@models/types';
 
+function ageValidator(control: AbstractControl): ValidationErrors | null {
+  if (control.value) {
+    const birthday = new Date(control.value);
+    const today = new Date();
+    let age = today.getFullYear() - birthday.getFullYear();
+    const m = today.getMonth() - birthday.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
+      age--;
+    }
+    if (age < 13) {
+      return { underAge: true };
+    }
+  }
+  return null;
+}
+
 export interface ProfileFormValue {
   name: string;
   gender: Gender;
-  age: number;
+  birthday: Date;
   height: number;
   currentWeight: number;
   unitSystem: UnitSystem;
@@ -19,7 +37,7 @@ export interface ProfileFormValue {
 export interface ProfileFormControls {
   name: FormControl<string | null>;
   gender: FormControl<string | null>;
-  age: FormControl<number | null>;
+  birthday: FormControl<Date | null>;
   height: FormControl<number | null>;
   currentWeight: FormControl<number | null>;
   unitSystem: FormControl<UnitSystem | null>;
@@ -37,10 +55,9 @@ export class ProfileFormService {
       Validators.maxLength(100),
     ]),
     gender: this.fb.control<Gender | null>(null, [Validators.required]),
-    age: this.fb.control<number | null>(null, [
+    birthday: this.fb.control<Date | null>(null, [
       Validators.required,
-      Validators.min(13),
-      Validators.max(120),
+      ageValidator,
     ]),
     height: this.fb.control<number | null>(null, [
       Validators.required,
@@ -68,7 +85,10 @@ export class ProfileFormService {
   }
 
   public get profileDataForCalculations() {
-    const { gender, age, height, currentWeight, unitSystem } = this.formValue;
+    const { gender, birthday, height, currentWeight, unitSystem } =
+      this.formValue;
+
+    const age = birthday ? this.handleCalculateAge(birthday) : null;
 
     const heightInCm =
       unitSystem === 'imperial' && height ? height * 2.54 : height;
@@ -83,5 +103,15 @@ export class ProfileFormService {
       heightCm: heightInCm,
       currentWeightKg: weightInKg,
     };
+  }
+
+  private handleCalculateAge(birthday: Date): number {
+    const today = new Date();
+    let age = today.getFullYear() - birthday.getFullYear();
+    const m = today.getMonth() - birthday.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
+      age--;
+    }
+    return age;
   }
 }
