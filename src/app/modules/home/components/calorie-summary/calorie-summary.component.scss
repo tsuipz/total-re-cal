@@ -1,0 +1,104 @@
+:host {
+  display: block;
+  font-family: "Inter", sans-serif;
+}
+
+.summary-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.daily-goal-card {
+  background: linear-gradient(90deg, #6e80ff 0%, #a36eff 100%);
+  border-radius: 16px;
+  padding: 24px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 500;
+
+    img {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .calories {
+    font-size: 48px;
+    font-weight: 700;
+
+    .target {
+      font-size: 36px;
+      font-weight: 500;
+    }
+  }
+
+  .remaining {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+
+  .progress-bar-container {
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    margin-top: 16px;
+    overflow: hidden;
+
+    .progress-bar {
+      height: 100%;
+      background-color: white;
+      border-radius: 4px;
+      transition: width 0.3s ease-in-out;
+    }
+  }
+}
+
+.details-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.detail-card {
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+
+  .value {
+    font-size: 28px;
+    font-weight: 600;
+  }
+
+  .label {
+    font-size: 14px;
+  }
+
+  &.consumed {
+    background-color: #e6f9f0;
+    color: #008a4c;
+  }
+
+  &.burned {
+    background-color: #ffeeee;
+    color: #e53935;
+  }
+
+  &.net-details {
+    background-color: #eef2ff;
+    color: #3949ab;
+  }
+}
