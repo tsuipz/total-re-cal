@@ -11,6 +11,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { ProfileFormService } from './profile.form.service';
 import { UnitSystem } from '@models/types';
 
@@ -27,6 +29,8 @@ import { UnitSystem } from '@models/types';
     MatButtonToggleModule,
     MatProgressSpinnerModule,
     MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',

@@ -1,0 +1,65 @@
+<div class="check-in-container">
+  <div class="check-in-header">
+    <mat-icon class="check-in-icon">schedule</mat-icon>
+    <h2>Choose Your Check-in Day</h2>
+    <p>Select the day of the week you'd like to receive reminders to weigh in. This helps you stay consistent with your
+      weight loss journey.</p>
+  </div>
+
+  <form [formGroup]="form"
+        class="check-in-form">
+    <mat-form-field appearance="outline"
+                    class="day-selector">
+      <mat-label>Check-in Day</mat-label>
+      <mat-select formControlName="checkInDay">
+        <mat-option *ngFor="let day of checkInDays"
+                    [value]="day"
+                    class="day-option">
+          <div class="day-option-content">
+            <span class="day-text">{{ day }}</span>
+          </div>
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls.checkInDay.hasError('required')">
+        Please select a check-in day
+      </mat-error>
+    </mat-form-field>
+
+    <div class="check-in-info">
+      <mat-card class="info-card">
+        <mat-card-content>
+          <div class="info-content">
+            <mat-icon class="info-icon">info</mat-icon>
+            <div class="info-text">
+              <h4>How it works</h4>
+              <p>Every {{ form.controls.checkInDay.value || 'Monday' }}, you'll receive a gentle reminder to log your
+                weight. This helps track your progress and keeps you motivated on your weight loss journey.</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </form>
+
+  <!-- Selected Plan Summary -->
+  <div *ngIf="selectedPlanData && goalWeight"
+       class="plan-summary">
+    <h4>Your Plan Summary</h4>
+    <div class="summary-content">
+      <p>
+        <strong>Goal Weight:</strong> {{ goalWeight }} lbs
+      </p>
+      <p>
+        <strong>Weekly Loss:</strong> {{ selectedPlanData.weeklyLoss }} lbs
+      </p>
+      <p>
+        <strong>Estimated Duration:</strong> {{ selectedPlanData.estimatedDuration | number: '1.0-0' }} weeks
+      </p>
+      <p *ngIf="firstWeekCalorieTargetRange">
+        <strong>First Week Estimated Calories Range:</strong>
+        {{ firstWeekCalorieTargetRange.min | number: '1.0-0' }} -
+        {{ firstWeekCalorieTargetRange.max | number: '1.0-0' }} kcal
+      </p>
+    </div>
+  </div>
+</div>

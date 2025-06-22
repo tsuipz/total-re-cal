@@ -42,18 +42,6 @@ export class PlanComponent {
   }
   public isSubmitting = false;
 
-  get selectedPlanData(): WeightLossPlan | null {
-    return this.planFormService.selectedPlanData;
-  }
-
-  get goalWeight(): number | null {
-    return this.planFormService.goalWeight;
-  }
-
-  get firstWeekCalorieTargetRange(): { min: number; max: number } | null {
-    return this.planFormService.firstWeekCalorieTargetRange;
-  }
-
   selectPlan(planType: GoalPlan): void {
     this.planForm.controls.goalPlan.setValue(planType);
   }

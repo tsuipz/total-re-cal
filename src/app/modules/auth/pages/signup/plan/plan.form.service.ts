@@ -81,36 +81,6 @@ export class PlanFormService {
     return this.form.controls.goalPlan.value;
   }
 
-  get firstWeekCalorieTargetRange(): { min: number; max: number } | null {
-    const profileData = this.profileFormService.profileDataForCalculations;
-    const weeklyLoss = this.selectedPlanData?.weeklyLoss;
-
-    if (
-      !profileData.age ||
-      !profileData.gender ||
-      !profileData.heightCm ||
-      !profileData.currentWeightKg ||
-      !weeklyLoss
-    ) {
-      return null;
-    }
-
-    const target = this.calorieCalculationService.calculateDailyCalorieTarget(
-      {
-        age: profileData.age,
-        gender: profileData.gender,
-        heightCm: profileData.heightCm,
-        currentWeightKg: profileData.currentWeightKg,
-      },
-      weeklyLoss
-    );
-
-    return {
-      min: target - 100,
-      max: target + 100,
-    };
-  }
-
   public get calculatedWeightLossPlan(): WeightLossPlan[] {
     const currentWeight = this.currentWeight;
     const goalWeight = this.goalWeight;
