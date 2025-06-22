@@ -1,7 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { State, adapter } from './workouts.reducers';
 
-const FEATURE_KEY = 'workouts';
+export const FEATURE_KEY = 'workouts';
 
 export const selectWorkoutsState = createFeatureSelector<State>(FEATURE_KEY);
 

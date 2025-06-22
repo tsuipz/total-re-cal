@@ -1,7 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { State, adapter } from './meals.reducers';
 
-const FEATURE_KEY = 'meals';
+export const FEATURE_KEY = 'meals';
 
 export const selectMealsState = createFeatureSelector<State>(FEATURE_KEY);
 
