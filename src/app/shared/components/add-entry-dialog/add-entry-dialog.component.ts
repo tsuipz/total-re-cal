@@ -13,6 +13,8 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatTimepickerModule } from '@angular/material/timepicker';
 
 const MUI = [
   MatFormFieldModule,
@@ -23,6 +25,8 @@ const MUI = [
   MatDialogActions,
   MatDialogClose,
   MatIconModule,
+  MatDatepickerModule,
+  MatTimepickerModule,
 ];
 
 export interface AddEntryDialogData {
@@ -34,6 +38,8 @@ export interface AddEntryDialogData {
   categoryPlaceholder: string;
   caloriesLabel: string;
   caloriesPlaceholder: string;
+  datetimeLabel: string;
+  timeLabel: string;
   submitButtonText: string;
 }
 
@@ -56,6 +62,7 @@ export class AddEntryDialogComponent {
       Validators.required,
       Validators.min(0),
     ]),
+    datetime: this.fb.control(new Date()),
   });
 
   public onSubmit(): void {

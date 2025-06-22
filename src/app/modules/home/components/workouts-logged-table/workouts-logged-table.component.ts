@@ -90,6 +90,8 @@ export class WorkoutsLoggedTableComponent implements OnInit {
       categoryPlaceholder: 'e.g., Running, Yoga, Weight Training',
       caloriesLabel: 'Calories Burned',
       caloriesPlaceholder: 'e.g., 300',
+      datetimeLabel: 'Date',
+      timeLabel: 'Time',
       submitButtonText: 'Add Workout',
     };
   }
