@@ -1,26 +1,21 @@
+import { CheckInDay, Gender, GoalPlan, UnitSystem } from '../types/user.type';
+
 export interface User {
   uid: string;
   name: string;
   email: string;
 
   // Demographic / body data
-  gender: 'male' | 'female' | 'non-binary' | 'prefer-not-to-say';
+  gender: Gender;
   age: number;
   height: number; // in cm or inches
   currentWeight: number; // in lbs or kg
   goalWeight: number;
 
   // Preferences
-  unitSystem: 'imperial' | 'metric';
-  checkInDay:
-    | 'Monday'
-    | 'Tuesday'
-    | 'Wednesday'
-    | 'Thursday'
-    | 'Friday'
-    | 'Saturday'
-    | 'Sunday';
-  goalPlan: 'slow' | 'moderate' | 'aggressive';
+  unitSystem: UnitSystem;
+  checkInDay: CheckInDay;
+  goalPlan: GoalPlan;
 
   // Calculated
   calorieTarget: number;

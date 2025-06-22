@@ -1,1 +1,26 @@
-<p>signup works!</p>
+<div class="signup-container">
+  <mat-card class="signup-card">
+    <mat-card-header>
+      <mat-card-title>Tell us about yourself</mat-card-title>
+      <mat-card-subtitle>This information helps us personalize your experience</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <app-profile (byNext)="onHandleNext()"
+                   (byBack)="onHandleBack()"
+                   #profileComponent></app-profile>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-stroked-button
+              type="button"
+              (click)="onHandleBack()">
+        Back
+      </button>
+      <button mat-raised-button
+              color="primary"
+              type="button"
+              (click)="profileComponent.onContinue()">
+        Continue
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

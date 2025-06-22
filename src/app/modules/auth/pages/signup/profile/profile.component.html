@@ -1,0 +1,111 @@
+<form [formGroup]="profileForm"
+      (ngSubmit)="onContinue()"
+      class="profile-form">
+  <!-- Name Field -->
+  <mat-form-field appearance="outline"
+                  class="form-field">
+    <mat-label>Full Name</mat-label>
+    <input matInput
+           formControlName="name"
+           placeholder="Enter your full name"
+           required />
+    <mat-error *ngIf="profileForm.controls.name.hasError('required')">
+      Name is required
+    </mat-error>
+    <mat-error *ngIf="profileForm.controls.name.hasError('minlength')">
+      Name must be at least 2 characters
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Gender Field -->
+  <mat-form-field appearance="outline"
+                  class="form-field">
+    <mat-label>Gender</mat-label>
+    <mat-select formControlName="gender"
+                required>
+      <mat-option value="male">Male</mat-option>
+      <mat-option value="female">Female</mat-option>
+      <mat-option value="non-binary">Non-binary</mat-option>
+      <mat-option value="prefer-not-to-say">Prefer not to say</mat-option>
+    </mat-select>
+    <mat-error *ngIf="profileForm.controls.gender.hasError('required')">
+      Please select a gender
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Age Field -->
+  <mat-form-field appearance="outline"
+                  class="form-field">
+    <mat-label>Age</mat-label>
+    <input matInput
+           type="number"
+           formControlName="age"
+           placeholder="Enter your age"
+           required
+           min="13"
+           max="120" />
+    <mat-error *ngIf="profileForm.controls.age.hasError('required')">
+      Age is required
+    </mat-error>
+    <mat-error *ngIf="profileForm.controls.age.hasError('min')">
+      Age must be at least 13
+    </mat-error>
+    <mat-error *ngIf="profileForm.controls.age.hasError('max')">
+      Age must be less than 120
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Height Field -->
+  <mat-form-field appearance="outline"
+                  class="form-field">
+    <mat-label>Height</mat-label>
+    <input matInput
+           type="number"
+           formControlName="height"
+           placeholder="Enter your height"
+           required
+           min="1" />
+    <span matSuffix>{{ unitSystem === 'metric' ? 'cm' : 'inches' }}</span>
+    <mat-error *ngIf="profileForm.controls.height.hasError('required')">
+      Height is required
+    </mat-error>
+    <mat-error *ngIf="profileForm.controls.height.hasError('min')">
+      Height must be at least {{ unitSystem === 'metric' ? '1 cm' : '1 inches' }}
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Current Weight Field -->
+  <mat-form-field appearance="outline"
+                  class="form-field">
+    <mat-label>Current Weight</mat-label>
+    <input matInput
+           type="number"
+           formControlName="currentWeight"
+           placeholder="Enter your current weight"
+           required
+           min="1"
+           step="0.1" />
+    <span matSuffix>{{ unitSystem === 'metric' ? 'kg' : 'lbs' }}</span>
+    <mat-error *ngIf="profileForm.controls.currentWeight.hasError('required')">
+      Current weight is required
+    </mat-error>
+    <mat-error *ngIf="profileForm.controls.currentWeight.hasError('min')">
+      Weight must be at least {{ unitSystem === 'metric' ? '1 kg' : '1 lbs' }}
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Unit System Toggle -->
+  <div class="form-field unit-system-field">
+    <div class="unit-system-label">UNIT SYSTEM</div>
+    <mat-button-toggle-group [value]="unitSystem"
+                             (change)="setUnitSystem($event.value)"
+                             class="unit-toggle">
+      <mat-button-toggle value="metric">
+        Metric (cm, kg)
+      </mat-button-toggle>
+      <mat-button-toggle value="imperial">
+        Imperial (inches, lbs)
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+</form>
