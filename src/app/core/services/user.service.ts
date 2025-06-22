@@ -7,6 +7,7 @@ import {
   docData,
   getDoc,
   setDoc,
+  Timestamp,
 } from '@angular/fire/firestore';
 import { from, map, Observable, of, switchMap, forkJoin, take } from 'rxjs';
 import { User } from '../models/interfaces';
@@ -89,7 +90,19 @@ export class UserService {
         if (!user) {
           throw new Error('User not found');
         }
-        return of(user);
+
+        // Recreate the user profile with the correct types
+        const birthday = user.birthday as unknown as Timestamp;
+        const createdAt = user.createdAt as unknown as Timestamp;
+
+        const userProfile: User = {
+          ...user,
+          birthday: new Date(birthday.toDate()),
+          createdAt: new Date(createdAt.toDate()),
+        };
+
+        // Return the user profile
+        return of(userProfile);
       })
     );
   }
