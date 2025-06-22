@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "jest --runInBand",
+    "test:watch": "jest --runInBand --watch",
+    "test:ci": "jest --runInBand --ci --coverage"
   },
   "private": true,
   "dependencies": {
@@ -38,13 +40,15 @@
     "@angular-devkit/build-angular": "^19.2.15",
     "@angular/cli": "^19.2.15",
     "@angular/compiler-cli": "^19.2.0",
-    "@types/jasmine": "~5.1.0",
-    "jasmine-core": "~5.6.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
+    "@testing-library/angular": "^17.1.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-marbles": "^3.0.3",
+    "jest-preset-angular": "^14.0.3",
+    "jest-watch-typeahead": "^2.2.2",
     "typescript": "~5.7.2"
   }
 }
