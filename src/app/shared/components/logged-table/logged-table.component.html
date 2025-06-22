@@ -1,0 +1,32 @@
+<section *ngIf="items.length > 0; else noItems"
+         class="items-list">
+  <mat-card *ngFor="let item of items"
+            class="item-card">
+    <mat-card-content class="item-card-content">
+      <div>
+        <div class="item-name">{{ item.name }}</div>
+        <div class="item-details">
+          {{ item.createdAt | date : 'shortTime' }} •
+          {{ item.category | titlecase }} •
+          <ng-container [ngSwitch]="item.source">
+            <span *ngSwitchCase="'photo'">🤖 AI detected</span>
+            <span *ngSwitchCase="'manual'">✏️ Manual entry</span>
+          </ng-container>
+        </div>
+      </div>
+      <div class="item-calories"
+           [ngClass]="{
+        'positive': item.calories > 0,
+        'negative': item.calories < 0
+      }">
+        {{ item.calories }}
+      </div>
+    </mat-card-content>
+  </mat-card>
+</section>
+
+<ng-template #noItems>
+  <div class="no-items-message">
+    <p>{{ emptyMessage }}</p>
+  </div>
+</ng-template>

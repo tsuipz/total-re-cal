@@ -1,1 +1,1 @@
-export type WorkoutSource = 'manual' | 'device';
+export type WorkoutSource = 'manual' | 'photo';
