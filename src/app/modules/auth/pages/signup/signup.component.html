@@ -1,25 +1,35 @@
 <div class="signup-container">
   <mat-card class="signup-card">
     <mat-card-header>
-      <mat-card-title>Tell us about yourself</mat-card-title>
-      <mat-card-subtitle>This information helps us personalize your experience</mat-card-subtitle>
+      <mat-card-title>{{ stepTitle }}</mat-card-title>
+      <mat-card-subtitle>{{ stepSubtitle }}</mat-card-subtitle>
     </mat-card-header>
+
     <mat-card-content>
-      <app-profile (byNext)="onHandleNext()"
-                   (byBack)="onHandleBack()"
-                   #profileComponent></app-profile>
+      <!-- Profile Step -->
+      <div *ngIf="currentStep === 0">
+        <app-profile #profileComponent></app-profile>
+      </div>
+
+      <!-- Plan Step -->
+      <div *ngIf="currentStep === 1">
+        <app-plan #planComponent></app-plan>
+      </div>
     </mat-card-content>
+
     <mat-card-actions>
       <button mat-stroked-button
               type="button"
-              (click)="onHandleBack()">
+              (click)="onHandleBack()"
+              [disabled]="currentStep === 0">
         Back
       </button>
       <button mat-raised-button
               color="primary"
               type="button"
-              (click)="profileComponent.onContinue()">
-        Continue
+              (click)="onHandleNext()"
+              [disabled]="currentStep === totalSteps - 1">
+        {{ currentStep === totalSteps - 1 ? 'Complete' : 'Continue' }}
       </button>
     </mat-card-actions>
   </mat-card>

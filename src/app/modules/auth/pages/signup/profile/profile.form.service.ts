@@ -58,4 +58,30 @@ export class ProfileFormService {
   public get form(): ProfileForm {
     return this._form;
   }
+
+  public get formValue(): ProfileFormValue {
+    return this.form.getRawValue() as ProfileFormValue;
+  }
+
+  public get currentWeight(): number | null {
+    return this.form.controls.currentWeight.value;
+  }
+
+  public get profileDataForCalculations() {
+    const { gender, age, height, currentWeight, unitSystem } = this.formValue;
+
+    const heightInCm =
+      unitSystem === 'imperial' && height ? height * 2.54 : height;
+    const weightInKg =
+      unitSystem === 'imperial' && currentWeight
+        ? currentWeight / 2.20462
+        : currentWeight;
+
+    return {
+      gender,
+      age,
+      heightCm: heightInCm,
+      currentWeightKg: weightInKg,
+    };
+  }
 }

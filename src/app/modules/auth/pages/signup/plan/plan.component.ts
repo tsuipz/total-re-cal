@@ -6,43 +6,55 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
-import { ProfileFormService } from './profile.form.service';
-import { UnitSystem } from '@models/types';
+import { MatChipsModule } from '@angular/material/chips';
+
+import { PlanFormService, WeightLossPlan } from './plan.form.service';
+import { GoalPlan } from '@models/types';
 
 @Component({
-  selector: 'app-profile',
+  selector: 'app-plan',
   imports: [
     ReactiveFormsModule,
     CommonModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     MatButtonModule,
     MatButtonToggleModule,
     MatProgressSpinnerModule,
     MatIconModule,
+    MatChipsModule,
   ],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss',
+  templateUrl: './plan.component.html',
+  styleUrl: './plan.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfileComponent {
-  private profileFormService = inject(ProfileFormService);
+export class PlanComponent {
+  private planFormService = inject(PlanFormService);
 
-  public profileForm = this.profileFormService.form;
+  public planForm = this.planFormService.form;
+  public get calculatedWeightLossPlan(): WeightLossPlan[] {
+    return this.planFormService.calculatedWeightLossPlan;
+  }
   public isSubmitting = false;
 
-  get unitSystem() {
-    return this.profileForm.controls.unitSystem.value;
+  get selectedPlanData(): WeightLossPlan | null {
+    return this.planFormService.selectedPlanData;
   }
 
-  setUnitSystem(system: UnitSystem): void {
-    this.profileForm.controls.unitSystem.setValue(system);
+  get goalWeight(): number | null {
+    return this.planFormService.goalWeight;
+  }
+
+  get firstWeekCalorieTargetRange(): { min: number; max: number } | null {
+    return this.planFormService.firstWeekCalorieTargetRange;
+  }
+
+  selectPlan(planType: GoalPlan): void {
+    this.planForm.controls.goalPlan.setValue(planType);
   }
 }
