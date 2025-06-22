@@ -54,4 +54,16 @@ export class SignupFormService {
   public get isValid(): boolean {
     return this.signupForm.valid;
   }
+
+  public get isFirstStepValid(): boolean {
+    return this.profileFormService.isValid;
+  }
+
+  public get isSecondStepValid(): boolean {
+    return this.planFormService.isValid;
+  }
+
+  public get isThirdStepValid(): boolean {
+    return this.checkInFormService.isValid;
+  }
 }

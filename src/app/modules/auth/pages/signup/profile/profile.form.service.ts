@@ -76,6 +76,10 @@ export class ProfileFormService {
     return this._form;
   }
 
+  public get isValid(): boolean {
+    return this.form.valid;
+  }
+
   public get formValue(): ProfileFormValue {
     return this.form.getRawValue() as ProfileFormValue;
   }

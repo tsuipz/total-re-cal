@@ -7,7 +7,7 @@ export interface User {
 
   // Demographic / body data
   gender: Gender;
-  birthday: Date; // ISO date string
+  birthday: Date;
   height: number; // in cm or inches
   currentWeight: number; // in lbs or kg
   goalWeight: number;
@@ -17,9 +17,6 @@ export interface User {
   checkInDay: CheckInDay;
   goalPlan: GoalPlan;
 
-  // Calculated
-  calorieTarget: number;
-
   // Metadata
-  createdAt: string; // ISO date
+  createdAt: Date;
 }

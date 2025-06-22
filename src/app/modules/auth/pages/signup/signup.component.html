@@ -26,15 +26,18 @@
       <button mat-stroked-button
               type="button"
               (click)="onHandleBack()"
-              [disabled]="currentStep === 0">
+              [disabled]="currentStep === 0 || (isLoading$ | async) === true">
         Back
       </button>
       <button mat-raised-button
               color="primary"
               type="button"
               (click)="onHandleNext()"
-              [disabled]="currentStep === totalSteps - 1">
-        {{ currentStep === totalSteps - 1 ? 'Complete' : 'Continue' }}
+              [disabled]="(isLoading$ | async) === true || !isFormValid">
+        <mat-spinner *ngIf="(isLoading$ | async) === true"
+                     diameter="20"></mat-spinner>
+        <span *ngIf="(isLoading$ | async) === false">{{ currentStep === totalSteps - 1 ? 'Submit' : 'Next'
+          }}</span>
       </button>
     </mat-card-actions>
   </mat-card>

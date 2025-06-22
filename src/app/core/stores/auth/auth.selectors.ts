@@ -7,12 +7,15 @@ export const selectAuthState = createFeatureSelector<State>(FEATURE_KEY);
 
 export const selectCurrentUserId = createSelector(
   selectAuthState,
-  (state) => state.currentUserId,
+  (state) => state.currentUserId
+);
+
+export const selectIsLoading = createSelector(
+  selectAuthState,
+  (state) => state.isLoading
 );
 
 export const selectUsersByIds = (userIds: string[]) =>
   createSelector(selectAuthState, (state) =>
-    userIds
-      .map((id) => state.entities[id])
-      .filter((user) => user !== undefined),
+    userIds.map((id) => state.entities[id]).filter((user) => user !== undefined)
   );

@@ -81,6 +81,10 @@ export class PlanFormService {
     return this.form.controls.goalPlan.value;
   }
 
+  public get isValid(): boolean {
+    return this.form.valid;
+  }
+
   public get calculatedWeightLossPlan(): WeightLossPlan[] {
     const currentWeight = this.currentWeight;
     const goalWeight = this.goalWeight;

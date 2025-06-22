@@ -17,6 +17,7 @@ describe('authReducer', () => {
       ids: [],
       entities: {},
       currentUserId: null,
+      isLoading: false,
     });
   });
 
