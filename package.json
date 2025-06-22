@@ -8,7 +8,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "jest --runInBand",
     "test:watch": "jest --runInBand --watch",
-    "test:ci": "jest --runInBand --ci --coverage"
+    "test:ci": "jest --runInBand --ci --coverage",
+    "lint": "ng lint",
+    "lint:ci": "ng lint --fix --quiet"
   },
   "private": true,
   "dependencies": {
