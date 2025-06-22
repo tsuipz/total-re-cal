@@ -15,5 +15,9 @@
   </div>
 
   <app-logged-table [items]="meals"
-                    [emptyMessage]="'No meals logged yet'"></app-logged-table>
+                    [emptyMessage]="'No meals logged yet'"
+                    [emptyIcon]="'restaurant'"
+                    [emptyActionText]="'Add your first meal'"
+                    [showEmptyAction]="true"
+                    (emptyActionClick)="openAddMealDialog()"></app-logged-table>
 </div>

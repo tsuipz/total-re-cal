@@ -1,6 +1,14 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 export interface LogEntry {
   name: string;
@@ -10,7 +18,7 @@ export interface LogEntry {
   createdAt: Date;
 }
 
-const MUI = [MatCardModule];
+const MUI = [MatCardModule, MatButtonModule, MatIconModule];
 
 @Component({
   selector: 'app-logged-table',
@@ -22,4 +30,8 @@ const MUI = [MatCardModule];
 export class LoggedTableComponent {
   @Input() items: LogEntry[] = [];
   @Input() emptyMessage = 'No items logged yet';
+  @Input() emptyIcon = 'add_circle_outline';
+  @Input() emptyActionText = 'Add your first item';
+  @Input() showEmptyAction = false;
+  @Output() emptyActionClick = new EventEmitter<void>();
 }

@@ -26,7 +26,20 @@
 </section>
 
 <ng-template #noItems>
-  <div class="no-items-message">
-    <p>{{ emptyMessage }}</p>
+  <div class="empty-state">
+    <div class="empty-state-content">
+      <mat-icon class="empty-state-icon">{{ emptyIcon }}</mat-icon>
+      <h3 class="empty-state-title">{{ emptyMessage }}</h3>
+      <p class="empty-state-description">
+        Start tracking your progress by adding your first entry
+      </p>
+      <button *ngIf="showEmptyAction"
+              mat-flat-button
+              color="primary"
+              class="empty-state-action"
+              (click)="emptyActionClick.emit()">
+        {{ emptyActionText }}
+      </button>
+    </div>
   </div>
 </ng-template>

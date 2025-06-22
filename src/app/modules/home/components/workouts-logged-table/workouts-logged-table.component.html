@@ -11,5 +11,9 @@
   </div>
 
   <app-logged-table [items]="workouts"
-                    [emptyMessage]="'No workouts logged yet'"></app-logged-table>
+                    [emptyMessage]="'No workouts logged yet'"
+                    [emptyIcon]="'fitness_center'"
+                    [emptyActionText]="'Add your first workout'"
+                    [showEmptyAction]="true"
+                    (emptyActionClick)="openAddWorkoutDialog()"></app-logged-table>
 </div>
