@@ -16,14 +16,20 @@ import { provideEffects } from '@ngrx/effects';
 import { provideRouterStore, routerReducer } from '@ngrx/router-store';
 import { AuthEffects } from './core/stores/auth/auth.effects';
 import { authReducer } from './core/stores/auth/auth.reducers';
+import { MealsEffects } from './core/stores/meals/meals.effects';
+import { mealsReducer } from './core/stores/meals/meals.reducers';
+import { WorkoutsEffects } from './core/stores/workouts/workouts.effects';
+import { workoutsReducer } from './core/stores/workouts/workouts.reducers';
 import { provideNativeDateAdapter } from '@angular/material/core';
 
 const REDUCERS = {
   auth: authReducer,
+  meals: mealsReducer,
+  workouts: workoutsReducer,
   router: routerReducer,
 };
 
-const EFFECTS = [AuthEffects];
+const EFFECTS = [AuthEffects, MealsEffects, WorkoutsEffects];
 
 export const appConfig: ApplicationConfig = {
   providers: [
