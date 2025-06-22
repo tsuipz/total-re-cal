@@ -1,0 +1,177 @@
+:host {
+  --primary-color: #3b82f6;
+  --text-color-primary: #111827;
+  --text-color-secondary: #6b7280;
+  --input-border-color: #d1d5db;
+  --input-border-color-focus: #3b82f6;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+::ng-deep .mat-mdc-form-field .mat-mdc-form-field-outline {
+  display: none;
+}
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-flex {
+  border-color: var(--input-border-color-focus);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.unit-system-field {
+  .unit-system-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-color-secondary);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    display: block;
+    text-transform: uppercase;
+  }
+
+  ::ng-deep .mat-button-toggle-group {
+    border: 1px solid var(--input-border-color);
+    border-radius: 12px;
+    display: flex;
+    overflow: hidden;
+
+    .mat-button-toggle {
+      flex: 1;
+      border: none;
+    }
+
+    .mat-button-toggle-checked {
+      background: var(--primary-color);
+      color: white;
+    }
+  }
+}
+
+::ng-deep .mat-mdc-card-actions {
+  display: flex;
+  gap: 1rem;
+  padding: 2rem 0 0;
+  margin-top: 1rem;
+
+  button {
+    flex: 1;
+    height: 52px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .mat-primary {
+    background-color: var(--primary-color);
+    &:hover {
+      background-color: var(--primary-color-dark);
+    }
+    &:disabled {
+      background-color: var(--disabled-color);
+      color: var(--disabled-text-color);
+    }
+  }
+
+  .mat-mdc-stroked-button {
+    border-color: var(--input-border-color);
+    color: var(--text-color-secondary);
+  }
+}
+
+::ng-deep .mat-mdc-form-field.mat-form-field-appearance-outline {
+  .mat-mdc-form-field-outline-start,
+  .mat-mdc-form-field-outline-end,
+  .mat-mdc-form-field-outline-gap {
+    border-width: 1px !important;
+    border-color: transparent !important;
+  }
+  &.mat-focused {
+    .mat-mdc-form-field-outline-thick {
+      border-color: var(--primary-color) !important;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .profile-container {
+    padding: 1rem;
+  }
+
+  .profile-card {
+    ::ng-deep .mat-mdc-card-header {
+      .mat-mdc-card-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    ::ng-deep .mat-mdc-card-actions {
+      flex-direction: column;
+
+      .back-button,
+      .continue-button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Animation for form fields
+.form-field {
+  animation: fadeInUp 0.4s ease-out;
+  animation-fill-mode: both;
+
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Material Design overrides for better styling
+::ng-deep {
+  .mat-mdc-button-toggle-group {
+    border-radius: 8px;
+    overflow: hidden;
+
+    .mat-button-toggle {
+      border: none;
+
+      &.mat-button-toggle-checked {
+        background-color: #667eea;
+        color: white;
+      }
+    }
+  }
+
+  .mat-mdc-raised-button.mat-primary {
+    background-color: #667eea;
+
+    &:hover:not(:disabled) {
+      background-color: #5a67d8;
+    }
+  }
+
+  .mat-mdc-stroked-button {
+    border-color: #e2e8f0;
+    color: #4a5568;
+
+    &:hover:not(:disabled) {
+      background-color: #f7fafc;
+      border-color: #cbd5e0;
+    }
+  }
+}

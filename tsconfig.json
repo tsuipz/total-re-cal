@@ -19,6 +19,7 @@
     "module": "ES2022",
     "paths": {
       "@app/*": ["./src/app/*"],
+      "@models/*": ["./src/app/core/models/*"],
       "@env": ["./src/environments/environment"],
       "@modules/*": ["./src/app/modules/*"],
       "@core/*": ["./src/app/core/*"]
