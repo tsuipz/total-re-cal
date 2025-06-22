@@ -15,6 +15,11 @@
       <div *ngIf="currentStep === 1">
         <app-plan #planComponent></app-plan>
       </div>
+
+      <!-- Check-in Step -->
+      <div *ngIf="currentStep === 2">
+        <app-check-in #checkInComponent></app-check-in>
+      </div>
     </mat-card-content>
 
     <mat-card-actions>

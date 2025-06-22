@@ -67,26 +67,4 @@
       Please select a weight loss plan
     </mat-error>
   </div>
-
-  <!-- Selected Plan Summary -->
-  <div *ngIf="selectedPlanData && goalWeight"
-       class="plan-summary">
-    <h4>Your Plan Summary</h4>
-    <div class="summary-content">
-      <p>
-        <strong>Goal Weight:</strong> {{ goalWeight }} lbs
-      </p>
-      <p>
-        <strong>Weekly Loss:</strong> {{ selectedPlanData.weeklyLoss }} lbs
-      </p>
-      <p>
-        <strong>Estimated Duration:</strong> {{ selectedPlanData.estimatedDuration | number: '1.0-0' }} weeks
-      </p>
-      <p *ngIf="firstWeekCalorieTargetRange">
-        <strong>First Week Estimated Calories Range:</strong>
-        {{ firstWeekCalorieTargetRange.min | number: '1.0-0' }} -
-        {{ firstWeekCalorieTargetRange.max | number: '1.0-0' }}
-      </p>
-    </div>
-  </div>
 </form>
