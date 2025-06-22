@@ -25,9 +25,10 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 - [ ] Manual testing
 
 **Test Configuration**:
-* Browser(s) tested:
-* Node version:
-* NPM version:
+
+- Browser(s) tested:
+- Node version:
+- NPM version:
 
 ## Checklist:
 
