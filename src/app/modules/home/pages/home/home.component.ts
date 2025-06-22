@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CalorieSummaryComponent } from '../../components/calorie-summary/calorie-summary.component';
-import { MealsLoggedComponent } from '../../components/meals-logged/meals-logged.component';
+import { MealsLoggedTableComponent } from '../../components/meals-logged-table/meals-logged-table.component';
 import { WorkoutsLoggedComponent } from '../../components/workouts-logged/workouts-logged.component';
 
 @Component({
@@ -10,7 +10,7 @@ import { WorkoutsLoggedComponent } from '../../components/workouts-logged/workou
   standalone: true,
   imports: [
     CalorieSummaryComponent,
-    MealsLoggedComponent,
+    MealsLoggedTableComponent,
     WorkoutsLoggedComponent,
   ],
 })
