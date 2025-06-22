@@ -1,4 +1,8 @@
-import { ApplicationConfig, provideZoneChangeDetection, isDevMode } from '@angular/core';
+import {
+  ApplicationConfig,
+  provideZoneChangeDetection,
+  isDevMode,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -9,7 +13,16 @@ import { environment } from '../environments/environment';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideEffects } from '@ngrx/effects';
-import { provideRouterStore } from '@ngrx/router-store';
+import { provideRouterStore, routerReducer } from '@ngrx/router-store';
+import { AuthEffects } from './core/stores/auth/auth.effects';
+import { authReducer } from './core/stores/auth/auth.reducers';
+
+const REDUCERS = {
+  auth: authReducer,
+  router: routerReducer,
+};
+
+const EFFECTS = [AuthEffects];
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,9 +31,9 @@ export const appConfig: ApplicationConfig = {
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-    provideStore(),
+    provideStore(REDUCERS),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
-    provideEffects(),
-    provideRouterStore()
-],
+    provideEffects(EFFECTS),
+    provideRouterStore(),
+  ],
 };

@@ -5,7 +5,6 @@ import {
   Firestore,
   doc,
   docData,
-  setDoc,
   getDoc,
 } from '@angular/fire/firestore';
 import { from, map, Observable, of, switchMap, forkJoin } from 'rxjs';
@@ -26,22 +25,7 @@ export class UserService {
    */
   public createUserProfile(afUser: AfUser | null): Observable<User> {
     if (!afUser) {
-      const user: User = {
-        uid: '',
-        name: '',
-        email: '',
-        gender: 'prefer-not-to-say',
-        age: 0,
-        height: 0,
-        currentWeight: 0,
-        goalWeight: 0,
-        unitSystem: 'imperial',
-        checkInDay: 'Monday',
-        goalPlan: 'slow',
-        calorieTarget: 0,
-        createdAt: new Date().toISOString(),
-      };
-      return of(user);
+      throw new Error('User not found');
     }
 
     const userDoc = doc(this.usersCollection, afUser.uid);
@@ -50,28 +34,7 @@ export class UserService {
     return user$.pipe(
       switchMap((user) => {
         if (!user) {
-          const userProfile: User = {
-            uid: afUser.uid,
-            name: afUser.displayName || '',
-            email: afUser.email || '',
-            gender: 'prefer-not-to-say',
-            age: 0,
-            height: 0,
-            currentWeight: 0,
-            goalWeight: 0,
-            unitSystem: 'imperial',
-            checkInDay: 'Monday',
-            goalPlan: 'slow',
-            calorieTarget: 0,
-            createdAt: new Date().toISOString(),
-          };
-
-          // Create user profile
-          setDoc(userDoc, userProfile);
-
-          return from(setDoc(userDoc, userProfile)).pipe(
-            map(() => userProfile)
-          );
+          throw new Error('User not found');
         }
         return of(user);
       })
