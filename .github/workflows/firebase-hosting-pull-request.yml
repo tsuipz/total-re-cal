@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.15' # Adjust this to your project's Node.js version
+          node-version: "22.14.0" # Adjust this to your project's Node.js version
 
       - name: Set Environment Variables and Create Environment File
         env:
@@ -31,17 +31,14 @@ jobs:
           FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
         run: node .github/scripts/replace-env.js
 
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Build Angular Project
-        run: npm run build
+      - name: Install Dependencies and Build Angular Project
+        run: npm ci && npm run build
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SPLIT_THE_CHECK_BDFF0 }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TOTAL_RE_CAL_P0 }}
           channelId: live
           projectId: split-the-check-bdff0
 
