@@ -1,0 +1,60 @@
+<h2 mat-dialog-title>
+  <mat-icon>{{ data.icon }}</mat-icon>
+  {{ data.title }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form"
+        class="entry-form">
+    <mat-form-field appearance="outline"
+                    class="full-width">
+      <mat-label>{{ data.nameLabel }}</mat-label>
+      <input matInput
+             formControlName="name"
+             [placeholder]="data.namePlaceholder">
+      <mat-error *ngIf="form.controls.name.hasError('required')">
+        {{ data.nameLabel }} is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline"
+                    class="full-width">
+      <mat-label>{{ data.categoryLabel }}</mat-label>
+      <input matInput
+             formControlName="category"
+             [placeholder]="data.categoryPlaceholder">
+      <mat-error *ngIf="form.controls.category.hasError('required')">
+        {{ data.categoryLabel }} is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline"
+                    class="full-width">
+      <mat-label>{{ data.caloriesLabel }}</mat-label>
+      <input matInput
+             type="number"
+             formControlName="calories"
+             [placeholder]="data.caloriesPlaceholder">
+      <mat-error *ngIf="form.controls.calories.hasError('required')">
+        {{ data.caloriesLabel }} are required
+      </mat-error>
+      <mat-error *ngIf="form.controls.calories.hasError('min')">
+        {{ data.caloriesLabel }} must be at least 0
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button
+          mat-dialog-close
+          (click)="onCancel()">
+    Cancel
+  </button>
+  <button mat-flat-button
+          color="primary"
+          (click)="onSubmit()"
+          [disabled]="form.invalid">
+    {{ data.submitButtonText }}
+  </button>
+</mat-dialog-actions>

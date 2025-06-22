@@ -3,12 +3,19 @@ import { MealEntry } from '../../../../core/models/interfaces/meal.interface';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {
   LogEntry,
   LoggedTableComponent,
 } from '@app/shared/components/logged-table/logged-table.component';
+import {
+  AddEntryDialogComponent,
+  AddEntryDialogData,
+} from '@app/shared/components/add-entry-dialog/add-entry-dialog.component';
+import { take } from 'rxjs';
+import { inject } from '@angular/core';
 
-const MUI = [MatButtonModule, MatIconModule];
+const MUI = [MatButtonModule, MatIconModule, MatDialogModule];
 
 const COMPONENTS = [LoggedTableComponent];
 
@@ -20,12 +27,31 @@ const COMPONENTS = [LoggedTableComponent];
   imports: [CommonModule, ...MUI, ...COMPONENTS],
 })
 export class MealsLoggedTableComponent implements OnInit {
+  private dialog = inject(MatDialog);
   meals: LogEntry[] = [];
 
   ngOnInit(): void {
     this.meals = this.getMockMeals().sort(
       (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
     );
+  }
+
+  openAddMealDialog(): void {
+    const dialogRef = this.dialog.open(AddEntryDialogComponent, {
+      width: '500px',
+      disableClose: false,
+      data: this.getMealDialogConfig(),
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((result) => {
+        if (result) {
+          // TODO: Add the meal to the meals array and save to backend
+          // For now, this is a placeholder for the actual implementation
+        }
+      });
   }
 
   private getMockMeals(): MealEntry[] {
@@ -58,5 +84,19 @@ export class MealsLoggedTableComponent implements OnInit {
         createdAt: new Date('2023-10-27T15:30:00'),
       },
     ];
+  }
+
+  private getMealDialogConfig(): AddEntryDialogData {
+    return {
+      title: 'Add Meal',
+      icon: 'restaurant',
+      nameLabel: 'Meal Name',
+      namePlaceholder: 'e.g., Grilled Chicken Salad',
+      categoryLabel: 'Category',
+      categoryPlaceholder: 'e.g., Breakfast, Lunch, Snack',
+      caloriesLabel: 'Calories',
+      caloriesPlaceholder: 'e.g., 350',
+      submitButtonText: 'Add Meal',
+    };
   }
 }
