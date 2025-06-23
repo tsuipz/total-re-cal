@@ -19,6 +19,13 @@ export const routes: Routes = [
         loadChildren: () =>
           import('@modules/home/home.routes').then((m) => m.HOME_ROUTES),
       },
+      {
+        path: 'dashboard',
+        loadChildren: () =>
+          import('@modules/dashboard/dashboard.routes').then(
+            (m) => m.DASHBOARD_ROUTES
+          ),
+      },
     ],
   },
   {

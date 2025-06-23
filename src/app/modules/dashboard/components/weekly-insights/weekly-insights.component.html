@@ -1,0 +1,46 @@
+<mat-card class="insights-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>psychology</mat-icon>
+      Weekly Insights
+    </mat-card-title>
+    <mat-card-subtitle>AI-powered analysis of your progress patterns</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="insights-grid">
+      <div class="insight-item"
+           *ngFor="let insight of insights">
+        <div class="insight-header">
+          <mat-icon class="insight-icon"
+                    [style.color]="getInsightColor(insight.type)">
+            {{ insight.icon }}
+          </mat-icon>
+          <div class="insight-title">{{ insight.title }}</div>
+        </div>
+
+        <div class="insight-description">
+          {{ insight.description }}
+        </div>
+
+        <div class="insight-metric">
+          <mat-chip class="metric-chip"
+                    [style.background-color]="getInsightColor(insight.type) + '20'">
+            {{ insight.metric }}
+          </mat-chip>
+        </div>
+      </div>
+    </div>
+
+    <div class="insights-summary">
+      <div class="summary-item">
+        <span class="summary-label">Overall Score:</span>
+        <span class="summary-value">B+</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Trend:</span>
+        <span class="summary-value positive">↗ Improving</span>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

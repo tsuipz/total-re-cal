@@ -1,0 +1,40 @@
+<mat-card class="chart-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>show_chart</mat-icon>
+      Net Calories Trend
+    </mat-card-title>
+    <mat-card-subtitle>Weekly net calorie intake vs goal</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="chart-container">
+      <div class="chart-placeholder">
+        <mat-icon class="chart-icon">insert_chart</mat-icon>
+        <p>Line chart visualization will be implemented in future tickets</p>
+      </div>
+    </div>
+
+    <div class="chart-stats">
+      <div class="stat-item">
+        <span class="stat-label">Average Net Calories:</span>
+        <span class="stat-value">{{ getAverageNetCalories() }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Goal Achievement Rate:</span>
+        <span class="stat-value">{{ getGoalAchievementRate() }}%</span>
+      </div>
+    </div>
+
+    <div class="chart-legend">
+      <div class="legend-item">
+        <div class="legend-color goal-line"></div>
+        <span>Daily Goal (1800)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color actual-line"></div>
+        <span>Actual Net Calories</span>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
