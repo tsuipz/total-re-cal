@@ -11,6 +11,7 @@ import {
 import { Observable, map, from } from 'rxjs';
 import { MealEntry } from '../models/interfaces';
 import { DateUtilsService } from './date-utils.service';
+import { subDays } from 'date-fns';
 
 @Injectable({
   providedIn: 'root',
@@ -46,6 +47,38 @@ export class MealsService {
           name: doc.name,
           calories: doc.calories,
           source: doc.source,
+          createdAt:
+            doc.createdAt instanceof Timestamp
+              ? doc.createdAt.toDate()
+              : new Date(doc.createdAt),
+        }));
+      })
+    );
+  }
+
+  /**
+   * Get meals for the last 7 days for a user
+   * @param userId - The user ID
+   * @returns Observable of meal entries for the last 7 days
+   */
+  getMealsForLast7Days(userId: string): Observable<MealEntry[]> {
+    const endDate = new Date();
+    const startDate = subDays(endDate, 6);
+
+    const startTimestamp = this.dateUtils.getStartOfDay(startDate);
+    const endTimestamp = this.dateUtils.getEndOfDay(endDate);
+
+    const mealsQuery = query(
+      this.mealsCollection,
+      where('userId', '==', userId),
+      where('createdAt', '>=', startTimestamp),
+      where('createdAt', '<=', endTimestamp)
+    );
+
+    return collectionData(mealsQuery, { idField: 'id' }).pipe(
+      map((docs) => {
+        return (docs as MealEntry[]).map((doc) => ({
+          ...doc,
           createdAt:
             doc.createdAt instanceof Timestamp
               ? doc.createdAt.toDate()

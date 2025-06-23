@@ -132,4 +132,31 @@ export class MealsEffects {
       )
     );
   });
+
+  loadMealsForWeek$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MealsActions.loadMealsForWeek),
+      switchMap(({ userId }) =>
+        this.mealsService.getMealsForLast7Days(userId).pipe(
+          mapResponse({
+            next: (meals) => MealsActions.loadMealsForWeekSuccess({ meals }),
+            error: (error: HttpErrorResponse) =>
+              MealsActions.loadMealsForWeekFailure({ error }),
+          })
+        )
+      )
+    );
+  });
+
+  loadWeeksData$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MealsActions.loadWeeksData),
+      mergeMap(({ userId }) =>
+        of(
+          MealsActions.loadMealsForWeek({ userId }),
+          WorkoutsActions.loadWorkoutsForWeek({ userId })
+        )
+      )
+    );
+  });
 }

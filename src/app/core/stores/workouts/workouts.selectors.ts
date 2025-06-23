@@ -44,6 +44,47 @@ export const selectTodaysTotalCalories = createSelector(
   (workouts) => workouts.reduce((total, workout) => total + workout.calories, 0)
 );
 
+/**
+ * Select the average daily burn of calories
+ * @param workouts - The workouts to select from
+ * @returns The average daily burn of calories
+ */
+export const selectAverageDailyBurn = createSelector(selectAll, (workouts) => {
+  // If there are no workouts, return 0
+  if (!workouts || workouts.length === 0) {
+    return 0;
+  }
+
+  // Add up all the calories burned
+  const totalCaloriesBurned = workouts.reduce(
+    (total, workout) => total + workout.calories,
+    0
+  );
+
+  // Get the unique days with entries
+  const uniqueDays = new Set(
+    workouts.map((workout) => startOfDay(new Date(workout.createdAt)).getTime())
+  );
+  const numberOfDaysWithEntries = uniqueDays.size;
+
+  // If there are no days with entries, return 0
+  if (numberOfDaysWithEntries === 0) {
+    return 0;
+  }
+
+  // Calculate the average daily burn
+  return Math.round(totalCaloriesBurned / numberOfDaysWithEntries);
+});
+
+/**
+ * Select the total burned in the last 7 days
+ * @param workouts - The workouts to select from
+ * @returns The total burned in the last 7 days
+ */
+export const selectTotalBurnedInWeek = createSelector(selectAll, (workouts) =>
+  workouts.reduce((total, workout) => total + workout.calories, 0)
+);
+
 export const selectWorkoutsByDateRange = (startDate: Date, endDate: Date) =>
   createSelector(selectAll, (workouts) => {
     const start = startOfDay(startDate);

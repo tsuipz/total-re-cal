@@ -1,0 +1,34 @@
+<section class="summary-cards-container">
+  <ng-container *ngTemplateOutlet="summaryCardTemplate; context: {
+    value: averageDailyIntake$ | async | number,
+    title: 'Avg Daily Intake',
+    color: 'blue'
+  }"></ng-container>
+  <ng-container *ngTemplateOutlet="summaryCardTemplate; context: {
+    value: averageDailyBurn$ | async | number,
+    title: 'Avg Daily Burn',
+    color: 'orange'
+  }"></ng-container>
+  <ng-container *ngTemplateOutlet="summaryCardTemplate; context: {
+    value: daysOnTarget$ | async,
+    title: 'Days On Target',
+    color: 'green'
+  }"></ng-container>
+  <ng-container *ngTemplateOutlet="summaryCardTemplate; context: {
+    value: totalBurnedInWeek$ | async | number,
+    title: 'Total Burned',
+    color: 'purple'
+  }"></ng-container>
+</section>
+
+<ng-template #summaryCardTemplate
+             let-value="value"
+             let-title="title"
+             let-color="color">
+  <mat-card [class]="'summary-card ' + color">
+    <mat-card-content>
+      <div class="value">{{ value }}</div>
+      <div class="title">{{ title }}</div>
+    </mat-card-content>
+  </mat-card>
+</ng-template>

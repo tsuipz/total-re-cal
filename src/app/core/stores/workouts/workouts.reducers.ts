@@ -131,5 +131,35 @@ export const workoutsReducer = createReducer(
       isLoading: false,
       error,
     })
+  ),
+
+  /**
+   * Load workouts for week actions
+   */
+  on(
+    WorkoutsActions.loadWorkoutsForWeek,
+    (state): State => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    WorkoutsActions.loadWorkoutsForWeekSuccess,
+    (state, { workouts }): State => {
+      return adapter.setAll(workouts, {
+        ...state,
+        isLoading: false,
+        error: null,
+      });
+    }
+  ),
+  on(
+    WorkoutsActions.loadWorkoutsForWeekFailure,
+    (state, { error }): State => ({
+      ...state,
+      isLoading: false,
+      error,
+    })
   )
 );
