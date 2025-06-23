@@ -1,5 +1,8 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { State, adapter } from './meals.reducers';
+import { isSameDay, startOfDay, endOfDay, isWithinInterval } from 'date-fns';
+import { selectTodaysTotalCalories as selectTodaysWorkoutsTotalCalories } from '@app/core/stores/workouts/workouts.selectors';
+import { selectCurrentUserDailyCaloriesGoal } from '../auth/auth.selectors';
 
 export const FEATURE_KEY = 'meals';
 
@@ -20,28 +23,21 @@ export const selectMealsError = createSelector(
   (state) => state.error
 );
 
-// Helper function to get date string for comparison
-const getDateString = (date: Date): string => {
-  return date.toISOString().split('T')[0];
-};
-
 // Business logic selectors
 export const selectMealsByDate = (date: Date) =>
   createSelector(selectAll, (meals) => {
-    const targetDateString = getDateString(date);
-
     return meals.filter((meal) => {
-      const mealDateString = getDateString(new Date(meal.createdAt));
-      return mealDateString === targetDateString;
+      const mealDate = new Date(meal.createdAt);
+      return isSameDay(mealDate, date);
     });
   });
 
 export const selectTodaysMeals = createSelector(selectAll, (meals) => {
-  const todayString = getDateString(new Date());
+  const today = new Date();
 
   return meals.filter((meal) => {
-    const mealDateString = getDateString(new Date(meal.createdAt));
-    return mealDateString === todayString;
+    const mealDate = new Date(meal.createdAt);
+    return isSameDay(mealDate, today);
   });
 });
 
@@ -50,16 +46,33 @@ export const selectTodaysTotalCalories = createSelector(
   (meals) => meals.reduce((total, meal) => total + meal.calories, 0)
 );
 
+export const selectTodaysNetCalories = createSelector(
+  selectTodaysTotalCalories,
+  selectTodaysWorkoutsTotalCalories,
+  (meals, workouts) => meals - workouts
+);
+
+export const selectRemainingCalories = createSelector(
+  selectTodaysNetCalories,
+  selectCurrentUserDailyCaloriesGoal,
+  (net, goal) => goal - net
+);
+
+export const selectTodaysTotalCaloriesProgress = createSelector(
+  selectTodaysNetCalories,
+  selectCurrentUserDailyCaloriesGoal,
+  (net, target) => (net / target) * 100
+);
+
 export const selectMealsByDateRange = (startDate: Date, endDate: Date) =>
   createSelector(selectAll, (meals) => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    start.setHours(0, 0, 0, 0);
-    end.setHours(23, 59, 59, 999);
+    const start = startOfDay(startDate);
+    const end = endOfDay(endDate);
+    const interval = { start, end };
 
     return meals.filter((meal) => {
       const mealDate = new Date(meal.createdAt);
-      return mealDate >= start && mealDate <= end;
+      return isWithinInterval(mealDate, interval);
     });
   });
 

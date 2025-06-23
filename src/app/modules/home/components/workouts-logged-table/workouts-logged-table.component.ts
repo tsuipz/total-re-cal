@@ -1,19 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { WorkoutEntry } from '../../../../core/models/interfaces/workout.interface';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {
-  LogEntry,
   LoggedTableComponent,
+  LogEntry,
 } from '@app/shared/components/logged-table/logged-table.component';
 import {
   AddEntryDialogComponent,
   AddEntryDialogData,
+  AddEntryFormValue,
 } from '@app/shared/components/add-entry-dialog/add-entry-dialog.component';
-import { take } from 'rxjs';
-import { inject } from '@angular/core';
+import { take, map, filter } from 'rxjs';
+import { Store } from '@ngrx/store';
+import {
+  selectTodaysWorkouts,
+  selectWorkoutsIsLoading,
+} from '@app/core/stores/workouts/workouts.selectors';
+import { selectCurrentUserId } from '@app/core/stores/auth/auth.selectors';
+import * as WorkoutsActions from '@app/core/stores/workouts/workouts.actions';
+import { WorkoutEntry } from '@app/core/models/interfaces';
 
 const MUI = [MatButtonModule, MatIconModule, MatDialogModule];
 
@@ -26,18 +33,15 @@ const COMPONENTS = [LoggedTableComponent];
   standalone: true,
   imports: [CommonModule, ...MUI, ...COMPONENTS],
 })
-export class WorkoutsLoggedTableComponent implements OnInit {
+export class WorkoutsLoggedTableComponent {
   private dialog = inject(MatDialog);
-  workouts: LogEntry[] = [];
+  private store = inject(Store);
 
-  ngOnInit(): void {
-    this.workouts = this.getMockWorkouts()
-      .map((workout) => ({
-        ...workout,
-        calories: -workout.calories,
-      }))
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-  }
+  workouts$ = this.store
+    .select(selectTodaysWorkouts)
+    .pipe(map((workouts) => workouts?.map(this.mapWorkoutToLogEntry) || []));
+  isLoading$ = this.store.select(selectWorkoutsIsLoading);
+  currentUserId$ = this.store.select(selectCurrentUserId);
 
   openAddWorkoutDialog(): void {
     const dialogRef = this.dialog.open(AddEntryDialogComponent, {
@@ -46,38 +50,47 @@ export class WorkoutsLoggedTableComponent implements OnInit {
       data: this.getWorkoutDialogConfig(),
     });
 
+    // After the dialog is closed, we need to add the workout to the store
     dialogRef
       .afterClosed()
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        filter((result) => !!result)
+      )
       .subscribe((result) => {
+        // if there is no result, don't add the workout to the store
         if (result) {
-          // TODO: Add the workout to the workouts array and save to backend
-          // For now, this is a placeholder for the actual implementation
+          const formValue: AddEntryFormValue = result;
+          this.currentUserId$.pipe(take(1)).subscribe((userId) => {
+            if (userId) {
+              // Create workout data
+              const workoutData: WorkoutEntry = {
+                id: '',
+                userId,
+                createdAt: formValue.datetime ?? new Date(),
+                name: formValue.name,
+                category: formValue.category,
+                calories: formValue.calories,
+                source: 'manual',
+              };
+
+              this.store.dispatch(
+                WorkoutsActions.addWorkout({ workout: workoutData })
+              );
+            }
+          });
         }
       });
   }
 
-  private getMockWorkouts(): WorkoutEntry[] {
-    return [
-      {
-        id: '1',
-        userId: '1',
-        category: 'Running',
-        name: 'Morning Run',
-        calories: 280,
-        source: 'photo',
-        createdAt: new Date('2023-10-27T07:00:00'),
-      },
-      {
-        id: '2',
-        userId: '1',
-        category: 'Yoga',
-        name: 'Yoga Session',
-        calories: 120,
-        source: 'manual',
-        createdAt: new Date('2023-10-27T18:00:00'),
-      },
-    ];
+  private mapWorkoutToLogEntry(workout: WorkoutEntry): LogEntry {
+    return {
+      name: workout.name,
+      category: workout.category,
+      calories: -workout.calories, // Negative calories for workouts (calories burned)
+      source: workout.source,
+      createdAt: workout.createdAt,
+    };
   }
 
   private getWorkoutDialogConfig(): AddEntryDialogData {

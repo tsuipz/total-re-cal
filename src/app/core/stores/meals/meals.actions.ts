@@ -49,3 +49,29 @@ export const clearMealsFailure = createAction(
   '[Meals] Clear Meals Failure',
   props<{ error: HttpErrorResponse }>()
 );
+
+/**
+ * Load meals for today actions
+ */
+export const loadMealsForToday = createAction(
+  '[Meals] Load Meals For Today',
+  props<{ userId: string }>()
+);
+
+export const loadMealsForTodaySuccess = createAction(
+  '[Meals] Load Meals For Today Success',
+  props<{ meals: MealEntry[] }>()
+);
+
+export const loadMealsForTodayFailure = createAction(
+  '[Meals] Load Meals For Today Failure',
+  props<{ error: HttpErrorResponse }>()
+);
+
+/**
+ * Load today's data actions (meals and workouts)
+ */
+export const loadTodaysData = createAction(
+  "[Meals] Load Today's Data",
+  props<{ userId: string }>()
+);

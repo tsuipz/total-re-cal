@@ -8,3 +8,21 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+/* Custom snackbar styles */
+.error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+.error-snackbar .mat-simple-snackbar-action {
+  color: white !important;
+}
+
+/* Success snackbar styles */
+.mat-mdc-snack-bar-container {
+  &.success-snackbar {
+    background-color: #4caf50 !important;
+    color: white !important;
+  }
+}

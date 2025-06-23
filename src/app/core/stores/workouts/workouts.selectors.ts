@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { State, adapter } from './workouts.reducers';
+import { isSameDay, startOfDay, endOfDay, isWithinInterval } from 'date-fns';
 
 export const FEATURE_KEY = 'workouts';
 
@@ -20,28 +21,21 @@ export const selectWorkoutsError = createSelector(
   (state) => state.error
 );
 
-// Helper function to get date string for comparison
-const getDateString = (date: Date): string => {
-  return date.toISOString().split('T')[0];
-};
-
 // Business logic selectors
 export const selectWorkoutsByDate = (date: Date) =>
   createSelector(selectAll, (workouts) => {
-    const targetDateString = getDateString(date);
-
     return workouts.filter((workout) => {
-      const workoutDateString = getDateString(new Date(workout.createdAt));
-      return workoutDateString === targetDateString;
+      const workoutDate = new Date(workout.createdAt);
+      return isSameDay(workoutDate, date);
     });
   });
 
 export const selectTodaysWorkouts = createSelector(selectAll, (workouts) => {
-  const todayString = getDateString(new Date());
+  const today = new Date();
 
   return workouts.filter((workout) => {
-    const workoutDateString = getDateString(new Date(workout.createdAt));
-    return workoutDateString === todayString;
+    const workoutDate = new Date(workout.createdAt);
+    return isSameDay(workoutDate, today);
   });
 });
 
@@ -52,14 +46,13 @@ export const selectTodaysTotalCalories = createSelector(
 
 export const selectWorkoutsByDateRange = (startDate: Date, endDate: Date) =>
   createSelector(selectAll, (workouts) => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    start.setHours(0, 0, 0, 0);
-    end.setHours(23, 59, 59, 999);
+    const start = startOfDay(startDate);
+    const end = endOfDay(endDate);
+    const interval = { start, end };
 
     return workouts.filter((workout) => {
       const workoutDate = new Date(workout.createdAt);
-      return workoutDate >= start && workoutDate <= end;
+      return isWithinInterval(workoutDate, interval);
     });
   });
 

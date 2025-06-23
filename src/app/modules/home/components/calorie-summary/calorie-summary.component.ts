@@ -1,5 +1,9 @@
 import { CommonModule, DecimalPipe, NgStyle } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { AuthSelectors } from '@app/core/stores/auth';
+import { MealsSelectors } from '@app/core/stores/meals';
+import { WorkoutsSelectors } from '@app/core/stores/workouts';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-calorie-summary',
@@ -9,19 +13,20 @@ import { Component } from '@angular/core';
   imports: [NgStyle, DecimalPipe, CommonModule],
 })
 export class CalorieSummaryComponent {
-  consumed = 950;
-  burned = 400;
-  target = 1650;
+  private store = inject(Store);
 
-  get net(): number {
-    return this.consumed - this.burned;
-  }
-
-  get remaining(): number {
-    return this.target - this.net;
-  }
-
-  get progress(): number {
-    return (this.net / this.target) * 100;
-  }
+  public consumed$ = this.store.select(
+    MealsSelectors.selectTodaysTotalCalories
+  );
+  public burned$ = this.store.select(
+    WorkoutsSelectors.selectTodaysTotalCalories
+  );
+  public net$ = this.store.select(MealsSelectors.selectTodaysNetCalories);
+  public target$ = this.store.select(
+    AuthSelectors.selectCurrentUserDailyCaloriesGoal
+  );
+  public remaining$ = this.store.select(MealsSelectors.selectRemainingCalories);
+  public progress$ = this.store.select(
+    MealsSelectors.selectTodaysTotalCaloriesProgress
+  );
 }

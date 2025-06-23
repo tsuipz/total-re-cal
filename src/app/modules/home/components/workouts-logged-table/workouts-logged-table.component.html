@@ -10,10 +10,19 @@
     </div>
   </div>
 
-  <app-logged-table [items]="workouts"
-                    [emptyMessage]="'No workouts logged yet'"
-                    [emptyIcon]="'fitness_center'"
-                    [emptyActionText]="'Add your first workout'"
-                    [showEmptyAction]="true"
-                    (emptyActionClick)="openAddWorkoutDialog()"></app-logged-table>
+  <ng-container *ngIf="isLoading$ | async; else workoutsContent">
+    <div class="loading-container">
+      <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+      <p>Loading workouts...</p>
+    </div>
+  </ng-container>
+
+  <ng-template #workoutsContent>
+    <app-logged-table [items]="(workouts$ | async) || []"
+                      [emptyMessage]="'No workouts logged yet'"
+                      [emptyIcon]="'fitness_center'"
+                      [emptyActionText]="'Add your first workout'"
+                      [showEmptyAction]="true"
+                      (emptyActionClick)="openAddWorkoutDialog()"></app-logged-table>
+  </ng-template>
 </div>

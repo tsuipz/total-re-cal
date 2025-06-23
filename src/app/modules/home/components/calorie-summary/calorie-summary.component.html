@@ -4,29 +4,29 @@
       <span>Daily Goal</span>
     </div>
     <div class="calories">
-      <span class="net">{{ net | number : '1.0-0' }}</span>
-      <span class="target">/ {{ target | number : '1.0-0' }}</span>
+      <span class="net">{{ net$ | async | number : '1.0-0' }} </span>
+      <span class="target">/ {{ target$ | async | number : '1.0-0' }}</span>
     </div>
     <div class="remaining">
-      {{ remaining | number : '1.0-0' }} calories remaining
+      {{ remaining$ | async | number : '1.0-0' }} calories remaining
     </div>
     <div class="progress-bar-container">
       <div class="progress-bar"
-           [ngStyle]="{ width: progress + '%' }"></div>
+           [ngStyle]="{ width: (progress$ | async) + '%' }"></div>
     </div>
   </div>
 
   <div class="details-container">
     <div class="detail-card consumed">
-      <div class="value">{{ consumed | number : '1.0-0' }}</div>
+      <div class="value">{{ consumed$ | async | number : '1.0-0' }}</div>
       <div class="label">Consumed</div>
     </div>
     <div class="detail-card burned">
-      <div class="value">{{ burned | number : '1.0-0' }}</div>
+      <div class="value">{{ burned$ | async | number : '1.0-0' }}</div>
       <div class="label">Burned</div>
     </div>
     <div class="detail-card net-details">
-      <div class="value">{{ net | number : '1.0-0' }}</div>
+      <div class="value">{{ net$ | async | number : '1.0-0' }}</div>
       <div class="label">Net</div>
     </div>
   </div>

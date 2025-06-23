@@ -1,29 +1,76 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { catchError, switchMap, tap, mergeMap } from 'rxjs/operators';
+import { mapResponse } from '@ngrx/operators';
 import { of } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import * as MealsActions from './meals.actions';
+import * as WorkoutsActions from '../workouts/workouts.actions';
+import { MealsService } from '../../services/meals.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class MealsEffects {
   private actions$ = inject(Actions);
+  private mealsService = inject(MealsService);
+  private snackBar = inject(MatSnackBar);
 
   addMeal$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(MealsActions.addMeal),
-      tap(({ meal }) => {
-        // eslint-disable-next-line no-console
-        console.log('[Meals Effects] Adding meal:', meal);
-      }),
       switchMap(({ meal }) =>
-        of(MealsActions.addMealSuccess({ meal })).pipe(
-          catchError((error) =>
-            of(MealsActions.addMealFailure({ error: error.message }))
-          )
+        this.mealsService.createMeal(meal).pipe(
+          mapResponse({
+            next: (createdMeal) =>
+              MealsActions.addMealSuccess({ meal: createdMeal }),
+            error: (error: HttpErrorResponse) =>
+              MealsActions.addMealFailure({ error }),
+          })
         )
       )
     );
   });
+
+  addMealSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MealsActions.addMealSuccess),
+        tap(({ meal }) => {
+          this.snackBar.open(
+            `Meal "${meal.name}" added successfully!`,
+            'Close',
+            {
+              duration: 3000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+            }
+          );
+        })
+      );
+    },
+    { dispatch: false }
+  );
+
+  addMealFailure$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(MealsActions.addMealFailure),
+        tap(({ error }) => {
+          this.snackBar.open(
+            `Failed to add meal: ${error.error || 'Unknown error'}`,
+            'Close',
+            {
+              duration: 5000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              panelClass: ['error-snackbar'],
+            }
+          );
+        })
+      );
+    },
+    { dispatch: false }
+  );
 
   setMeals$ = createEffect(() => {
     return this.actions$.pipe(
@@ -54,6 +101,33 @@ export class MealsEffects {
           catchError((error) =>
             of(MealsActions.clearMealsFailure({ error: error.message }))
           )
+        )
+      )
+    );
+  });
+
+  loadMealsForToday$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MealsActions.loadMealsForToday),
+      switchMap(({ userId }) =>
+        this.mealsService.getMealsForToday(userId).pipe(
+          mapResponse({
+            next: (meals) => MealsActions.loadMealsForTodaySuccess({ meals }),
+            error: (error: HttpErrorResponse) =>
+              MealsActions.loadMealsForTodayFailure({ error }),
+          })
+        )
+      )
+    );
+  });
+
+  loadTodaysData$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(MealsActions.loadTodaysData),
+      mergeMap(({ userId }) =>
+        of(
+          MealsActions.loadMealsForToday({ userId }),
+          WorkoutsActions.loadWorkoutsForToday({ userId })
         )
       )
     );

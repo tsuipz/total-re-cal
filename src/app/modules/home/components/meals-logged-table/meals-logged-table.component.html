@@ -14,10 +14,19 @@
     </div>
   </div>
 
-  <app-logged-table [items]="meals"
-                    [emptyMessage]="'No meals logged yet'"
-                    [emptyIcon]="'restaurant'"
-                    [emptyActionText]="'Add your first meal'"
-                    [showEmptyAction]="true"
-                    (emptyActionClick)="openAddMealDialog()"></app-logged-table>
+  <ng-container *ngIf="isLoading$ | async; else mealsContent">
+    <div class="loading-container">
+      <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+      <p>Loading meals...</p>
+    </div>
+  </ng-container>
+
+  <ng-template #mealsContent>
+    <app-logged-table [items]="(meals$ | async) || []"
+                      [emptyMessage]="'No meals logged yet'"
+                      [emptyIcon]="'restaurant'"
+                      [emptyActionText]="'Add your first meal'"
+                      [showEmptyAction]="true"
+                      (emptyActionClick)="openAddMealDialog()"></app-logged-table>
+  </ng-template>
 </div>

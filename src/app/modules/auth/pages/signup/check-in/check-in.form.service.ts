@@ -8,7 +8,7 @@ import {
 import { CheckInDay } from '../../../../../core/models/types/user.type';
 import { PlanFormService } from '../plan/plan.form.service';
 import { ProfileFormService } from '../profile/profile.form.service';
-import { CalorieCalculationService } from '../../../../../core/services/calorie-calculation.service';
+import { calculateDailyCalorieTarget } from '@app/shared/utils/calories.util';
 
 export interface CheckInFormValue {
   checkInDay: CheckInDay;
@@ -25,7 +25,6 @@ export class CheckInFormService {
   private fb = inject(FormBuilder);
   private planFormService = inject(PlanFormService);
   private profileFormService = inject(ProfileFormService);
-  private calorieCalculationService = inject(CalorieCalculationService);
 
   private checkInForm: CheckInForm = this.fb.group<CheckInFormControls>({
     checkInDay: this.fb.control<CheckInDay>('Monday', {
@@ -64,15 +63,7 @@ export class CheckInFormService {
       return null;
     }
 
-    const target = this.calorieCalculationService.calculateDailyCalorieTarget(
-      {
-        age: profileData.age,
-        gender: profileData.gender,
-        heightCm: profileData.heightCm,
-        currentWeightKg: profileData.currentWeightKg,
-      },
-      weeklyLoss
-    );
+    const target = calculateDailyCalorieTarget(profileData, weeklyLoss);
 
     return {
       min: target - 100,
