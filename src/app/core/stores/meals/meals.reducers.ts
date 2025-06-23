@@ -102,5 +102,32 @@ export const mealsReducer = createReducer(
       isLoading: false,
       error,
     })
+  ),
+
+  /**
+   * Load meals for today actions
+   */
+  on(
+    MealsActions.loadMealsForToday,
+    (state): State => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(MealsActions.loadMealsForTodaySuccess, (state, { meals }): State => {
+    return adapter.setAll(meals, {
+      ...state,
+      isLoading: false,
+      error: null,
+    });
+  }),
+  on(
+    MealsActions.loadMealsForTodayFailure,
+    (state, { error }): State => ({
+      ...state,
+      isLoading: false,
+      error,
+    })
   )
 );

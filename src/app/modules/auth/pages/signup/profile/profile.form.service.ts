@@ -7,6 +7,7 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { profileDataForCalculations } from '@app/shared/utils/calories.util';
 import { Gender, UnitSystem } from '@models/types';
 
 function ageValidator(control: AbstractControl): ValidationErrors | null {
@@ -92,30 +93,12 @@ export class ProfileFormService {
     const { gender, birthday, height, currentWeight, unitSystem } =
       this.formValue;
 
-    const age = birthday ? this.handleCalculateAge(birthday) : null;
-
-    const heightInCm =
-      unitSystem === 'imperial' && height ? height * 2.54 : height;
-    const weightInKg =
-      unitSystem === 'imperial' && currentWeight
-        ? currentWeight / 2.20462
-        : currentWeight;
-
-    return {
+    return profileDataForCalculations(
       gender,
-      age,
-      heightCm: heightInCm,
-      currentWeightKg: weightInKg,
-    };
-  }
-
-  private handleCalculateAge(birthday: Date): number {
-    const today = new Date();
-    let age = today.getFullYear() - birthday.getFullYear();
-    const m = today.getMonth() - birthday.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
-      age--;
-    }
-    return age;
+      birthday,
+      height,
+      currentWeight,
+      unitSystem
+    );
   }
 }

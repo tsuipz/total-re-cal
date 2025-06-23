@@ -1,6 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -43,6 +49,22 @@ export interface AddEntryDialogData {
   submitButtonText: string;
 }
 
+export interface AddEntryFormValue {
+  name: string;
+  category: string;
+  calories: number;
+  datetime: Date;
+}
+
+export interface AddEntryFormControls {
+  name: FormControl<string | null>;
+  category: FormControl<string | null>;
+  calories: FormControl<number | null>;
+  datetime: FormControl<Date | null>;
+}
+
+export type AddEntryForm = FormGroup<AddEntryFormControls>;
+
 @Component({
   selector: 'app-add-entry-dialog',
   imports: [CommonModule, ReactiveFormsModule, ...MUI],
@@ -55,7 +77,7 @@ export class AddEntryDialogComponent {
   private dialogRef = inject(MatDialogRef<AddEntryDialogComponent>);
   public data = inject<AddEntryDialogData>(MAT_DIALOG_DATA);
 
-  public form = this.fb.group({
+  public form: AddEntryForm = this.fb.group<AddEntryFormControls>({
     name: this.fb.control('', [Validators.required]),
     category: this.fb.control('', [Validators.required]),
     calories: this.fb.control<number | null>(null, [

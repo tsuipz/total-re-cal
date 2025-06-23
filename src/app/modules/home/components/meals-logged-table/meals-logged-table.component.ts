@@ -1,19 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { MealEntry } from '../../../../core/models/interfaces/meal.interface';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {
-  LogEntry,
   LoggedTableComponent,
+  LogEntry,
 } from '@app/shared/components/logged-table/logged-table.component';
 import {
   AddEntryDialogComponent,
   AddEntryDialogData,
+  AddEntryFormValue,
 } from '@app/shared/components/add-entry-dialog/add-entry-dialog.component';
-import { take } from 'rxjs';
-import { inject } from '@angular/core';
+import { take, map, filter } from 'rxjs';
+import { Store } from '@ngrx/store';
+import {
+  selectTodaysMeals,
+  selectMealsIsLoading,
+} from '@app/core/stores/meals/meals.selectors';
+import { selectCurrentUserId } from '@app/core/stores/auth/auth.selectors';
+import * as MealsActions from '@app/core/stores/meals/meals.actions';
+import { MealEntry } from '@app/core/models/interfaces';
 
 const MUI = [MatButtonModule, MatIconModule, MatDialogModule];
 
@@ -26,15 +33,15 @@ const COMPONENTS = [LoggedTableComponent];
   standalone: true,
   imports: [CommonModule, ...MUI, ...COMPONENTS],
 })
-export class MealsLoggedTableComponent implements OnInit {
+export class MealsLoggedTableComponent {
   private dialog = inject(MatDialog);
-  meals: LogEntry[] = [];
+  private store = inject(Store);
 
-  ngOnInit(): void {
-    this.meals = this.getMockMeals().sort(
-      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-    );
-  }
+  meals$ = this.store
+    .select(selectTodaysMeals)
+    .pipe(map((meals) => meals?.map(this.mapMealToLogEntry) || []));
+  isLoading$ = this.store.select(selectMealsIsLoading);
+  currentUserId$ = this.store.select(selectCurrentUserId);
 
   openAddMealDialog(): void {
     const dialogRef = this.dialog.open(AddEntryDialogComponent, {
@@ -43,47 +50,45 @@ export class MealsLoggedTableComponent implements OnInit {
       data: this.getMealDialogConfig(),
     });
 
+    // After the dialog is closed, we need to add the meal to the store
     dialogRef
       .afterClosed()
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        filter((result) => !!result)
+      )
       .subscribe((result) => {
+        // if there is no result, don't add the meal to the store
         if (result) {
-          // TODO: Add the meal to the meals array and save to backend
-          // For now, this is a placeholder for the actual implementation
+          const formValue: AddEntryFormValue = result;
+          this.currentUserId$.pipe(take(1)).subscribe((userId) => {
+            if (userId) {
+              // Create meal data
+              const mealData: MealEntry = {
+                id: '',
+                userId,
+                createdAt: formValue.datetime ?? new Date(),
+                name: formValue.name,
+                category: formValue.category,
+                calories: formValue.calories,
+                source: 'manual',
+              };
+
+              this.store.dispatch(MealsActions.addMeal({ meal: mealData }));
+            }
+          });
         }
       });
   }
 
-  private getMockMeals(): MealEntry[] {
-    return [
-      {
-        id: '1',
-        userId: '1',
-        category: 'Breakfast',
-        name: 'Avocado Toast with Eggs',
-        calories: 420,
-        source: 'photo',
-        createdAt: new Date('2023-10-27T08:30:00'),
-      },
-      {
-        id: '2',
-        userId: '1',
-        category: 'Lunch',
-        name: 'Greek Salad with Chicken',
-        calories: 380,
-        source: 'manual',
-        createdAt: new Date('2023-10-27T12:45:00'),
-      },
-      {
-        id: '3',
-        userId: '1',
-        category: 'Snack',
-        name: 'Apple & Almonds',
-        calories: 150,
-        source: 'manual',
-        createdAt: new Date('2023-10-27T15:30:00'),
-      },
-    ];
+  private mapMealToLogEntry(meal: MealEntry): LogEntry {
+    return {
+      name: meal.name,
+      category: meal.category,
+      calories: meal.calories,
+      source: meal.source,
+      createdAt: meal.createdAt,
+    };
   }
 
   private getMealDialogConfig(): AddEntryDialogData {

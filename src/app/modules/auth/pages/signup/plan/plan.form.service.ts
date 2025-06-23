@@ -7,7 +7,6 @@ import {
 } from '@angular/forms';
 import { GoalPlan } from '@models/types';
 import { ProfileFormService } from '../profile/profile.form.service';
-import { CalorieCalculationService } from '@core/services/calorie-calculation.service';
 
 export interface WeightLossPlan {
   type: GoalPlan;
@@ -32,7 +31,6 @@ export type PlanForm = FormGroup<PlanFormControls>;
 export class PlanFormService {
   private fb = new FormBuilder();
   private profileFormService = inject(ProfileFormService);
-  private calorieCalculationService = inject(CalorieCalculationService);
 
   public form: PlanForm = this.fb.group<PlanFormControls>({
     goalWeight: this.fb.control<number | null>(null, [Validators.required]),
