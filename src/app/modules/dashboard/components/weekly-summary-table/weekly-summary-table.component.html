@@ -1,0 +1,64 @@
+<mat-card class="summary-table-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>table_chart</mat-icon>
+      Weekly Summary
+    </mat-card-title>
+    <mat-card-subtitle>Daily calorie intake and expenditure overview</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <table mat-table
+           [dataSource]="weeklyData"
+           class="summary-table">
+      <!-- Day Column -->
+      <ng-container matColumnDef="day">
+        <th mat-header-cell
+            *matHeaderCellDef>Day</th>
+        <td mat-cell
+            *matCellDef="let element">{{ element.day }}</td>
+      </ng-container>
+
+      <!-- Calories In Column -->
+      <ng-container matColumnDef="caloriesIn">
+        <th mat-header-cell
+            *matHeaderCellDef>Calories In</th>
+        <td mat-cell
+            *matCellDef="let element">{{ element.caloriesIn }}</td>
+      </ng-container>
+
+      <!-- Calories Out Column -->
+      <ng-container matColumnDef="caloriesOut">
+        <th mat-header-cell
+            *matHeaderCellDef>Calories Out</th>
+        <td mat-cell
+            *matCellDef="let element">{{ element.caloriesOut }}</td>
+      </ng-container>
+
+      <!-- Net Calories Column -->
+      <ng-container matColumnDef="netCalories">
+        <th mat-header-cell
+            *matHeaderCellDef>Net Calories</th>
+        <td mat-cell
+            *matCellDef="let element"
+            [class.above-goal]="element.netCalories > element.goal"
+            [class.below-goal]="element.netCalories < element.goal">
+          {{ element.netCalories }}
+        </td>
+      </ng-container>
+
+      <!-- Goal Column -->
+      <ng-container matColumnDef="goal">
+        <th mat-header-cell
+            *matHeaderCellDef>Daily Goal</th>
+        <td mat-cell
+            *matCellDef="let element">{{ element.goal }}</td>
+      </ng-container>
+
+      <tr mat-header-row
+          *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row
+          *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>

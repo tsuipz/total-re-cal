@@ -1,0 +1,153 @@
+.chart-card {
+  width: 100%;
+  height: 100%;
+}
+
+.chart-container {
+  margin: 16px 0;
+}
+
+.chart-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  background-color: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  color: #6c757d;
+
+  .chart-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 16px;
+    color: #adb5bd;
+  }
+
+  p {
+    margin: 0;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+}
+
+.breakdown-stats {
+  display: flex;
+  justify-content: space-between;
+  margin: 16px 0;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.breakdown-list {
+  margin-top: 16px;
+}
+
+.breakdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+}
+
+.category-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+}
+
+.category-name {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.category-calories {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1976d2, #42a5f5);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.percentage {
+  min-width: 40px;
+  text-align: right;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .breakdown-stats {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .breakdown-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .category-info {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .progress-bar {
+    width: 100%;
+  }
+
+  .percentage {
+    align-self: flex-end;
+  }
+
+  .chart-placeholder {
+    height: 150px;
+
+    .chart-icon {
+      font-size: 2rem;
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+}

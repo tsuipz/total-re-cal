@@ -1,0 +1,44 @@
+<mat-card class="chart-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>bar_chart</mat-icon>
+      Daily Breakdown
+    </mat-card-title>
+    <mat-card-subtitle>Calorie distribution by meal type</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="chart-container">
+      <div class="chart-placeholder">
+        <mat-icon class="chart-icon">bar_chart</mat-icon>
+        <p>Bar chart visualization will be implemented in future tickets</p>
+      </div>
+    </div>
+
+    <div class="breakdown-stats">
+      <div class="stat-item">
+        <span class="stat-label">Total Calories:</span>
+        <span class="stat-value">{{ getTotalCalories() }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Largest Category:</span>
+        <span class="stat-value">{{ getLargestCategory() }}</span>
+      </div>
+    </div>
+
+    <div class="breakdown-list">
+      <div class="breakdown-item"
+           *ngFor="let item of breakdownData">
+        <div class="category-info">
+          <span class="category-name">{{ item.category }}</span>
+          <span class="category-calories">{{ item.calories }} cal</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill"
+               [style.width.%]="item.percentage"></div>
+        </div>
+        <span class="percentage">{{ item.percentage }}%</span>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
