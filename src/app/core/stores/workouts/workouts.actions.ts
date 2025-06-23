@@ -77,3 +77,21 @@ export const loadTodaysData = createAction(
   "[Workouts] Load Today's Data",
   props<{ userId: string }>()
 );
+
+/**
+ * Load workouts for week actions
+ */
+export const loadWorkoutsForWeek = createAction(
+  '[Workouts] Load Workouts For Week',
+  props<{ userId: string }>()
+);
+
+export const loadWorkoutsForWeekSuccess = createAction(
+  '[Workouts] Load Workouts For Week Success',
+  props<{ workouts: WorkoutEntry[] }>()
+);
+
+export const loadWorkoutsForWeekFailure = createAction(
+  '[Workouts] Load Workouts For Week Failure',
+  props<{ error: HttpErrorResponse }>()
+);

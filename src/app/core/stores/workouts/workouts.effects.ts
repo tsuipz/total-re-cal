@@ -108,13 +108,6 @@ export class WorkoutsEffects {
   loadWorkoutsForToday$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(WorkoutsActions.loadWorkoutsForToday),
-      tap(({ userId }) => {
-        // eslint-disable-next-line no-console
-        console.log(
-          '[Workouts Effects] Loading workouts for today for user:',
-          userId
-        );
-      }),
       switchMap(({ userId }) =>
         this.workoutsService.getWorkoutsForToday(userId).pipe(
           mapResponse({
@@ -122,6 +115,22 @@ export class WorkoutsEffects {
               WorkoutsActions.loadWorkoutsForTodaySuccess({ workouts }),
             error: (error: HttpErrorResponse) =>
               WorkoutsActions.loadWorkoutsForTodayFailure({ error }),
+          })
+        )
+      )
+    );
+  });
+
+  loadWorkoutsForWeek$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(WorkoutsActions.loadWorkoutsForWeek),
+      switchMap(({ userId }) =>
+        this.workoutsService.getWorkoutsForLast7Days(userId).pipe(
+          mapResponse({
+            next: (workouts) =>
+              WorkoutsActions.loadWorkoutsForWeekSuccess({ workouts }),
+            error: (error: HttpErrorResponse) =>
+              WorkoutsActions.loadWorkoutsForWeekFailure({ error }),
           })
         )
       )

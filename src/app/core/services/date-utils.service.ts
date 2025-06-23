@@ -41,6 +41,26 @@ export class DateUtilsService {
   }
 
   /**
+   * Get start of a specific day as a Firestore Timestamp
+   * @param date - The date
+   * @returns Timestamp representing start of the day
+   */
+  getStartOfDay(date: Date): Timestamp {
+    const startOfDate = startOfDay(date);
+    return Timestamp.fromDate(startOfDate);
+  }
+
+  /**
+   * Get end of a specific day as a Firestore Timestamp
+   * @param date - The date
+   * @returns Timestamp representing end of the day
+   */
+  getEndOfDay(date: Date): Timestamp {
+    const endOfDate = endOfDay(date);
+    return Timestamp.fromDate(endOfDate);
+  }
+
+  /**
    * Check if two dates are the same day
    * @param date1 - First date
    * @param date2 - Second date

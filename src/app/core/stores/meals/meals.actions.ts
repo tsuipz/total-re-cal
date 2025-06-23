@@ -75,3 +75,29 @@ export const loadTodaysData = createAction(
   "[Meals] Load Today's Data",
   props<{ userId: string }>()
 );
+
+/**
+ * Load meals for week actions
+ */
+export const loadMealsForWeek = createAction(
+  '[Meals] Load Meals For Week',
+  props<{ userId: string }>()
+);
+
+export const loadMealsForWeekSuccess = createAction(
+  '[Meals] Load Meals For Week Success',
+  props<{ meals: MealEntry[] }>()
+);
+
+export const loadMealsForWeekFailure = createAction(
+  '[Meals] Load Meals For Week Failure',
+  props<{ error: HttpErrorResponse }>()
+);
+
+/**
+ * Load week's data actions (meals and workouts)
+ */
+export const loadWeeksData = createAction(
+  "[Meals] Load Week's Data",
+  props<{ userId: string }>()
+);

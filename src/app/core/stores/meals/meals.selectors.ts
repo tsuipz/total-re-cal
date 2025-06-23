@@ -1,6 +1,13 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { State, adapter } from './meals.reducers';
-import { isSameDay, startOfDay, endOfDay, isWithinInterval } from 'date-fns';
+import {
+  isSameDay,
+  startOfDay,
+  endOfDay,
+  isWithinInterval,
+  subDays,
+} from 'date-fns';
+import { selectAll as selectAllWorkouts } from '../workouts/workouts.selectors';
 import { selectTodaysTotalCalories as selectTodaysWorkoutsTotalCalories } from '@app/core/stores/workouts/workouts.selectors';
 import { selectCurrentUserDailyCaloriesGoal } from '../auth/auth.selectors';
 
@@ -64,6 +71,35 @@ export const selectTodaysTotalCaloriesProgress = createSelector(
   (net, target) => (net / target) * 100
 );
 
+/**
+ * Select the average daily intake of calories
+ * @param meals - The meals to select from
+ * @returns The average daily intake of calories
+ */
+export const selectAverageDailyIntake = createSelector(selectAll, (meals) => {
+  // If there are no meals, return 0
+  if (!meals || meals.length === 0) {
+    return 0;
+  }
+
+  // Add up all the calories
+  const totalCalories = meals.reduce((total, meal) => total + meal.calories, 0);
+
+  // Get the unique days with entries
+  const uniqueDays = new Set(
+    meals.map((meal) => startOfDay(new Date(meal.createdAt)).getTime())
+  );
+  const numberOfDaysWithEntries = uniqueDays.size;
+
+  // If there are no days with entries, return 0
+  if (numberOfDaysWithEntries === 0) {
+    return 0;
+  }
+
+  // Calculate the average daily intake
+  return Math.round(totalCalories / numberOfDaysWithEntries);
+});
+
 export const selectMealsByDateRange = (startDate: Date, endDate: Date) =>
   createSelector(selectAll, (meals) => {
     const start = startOfDay(startDate);
@@ -83,3 +119,61 @@ export const selectTotalCaloriesByDateRange = (
   createSelector(selectMealsByDateRange(startDate, endDate), (meals) =>
     meals.reduce((total, meal) => total + meal.calories, 0)
   );
+
+export const selectDaysOnTarget = createSelector(
+  selectAll,
+  selectAllWorkouts,
+  selectCurrentUserDailyCaloriesGoal,
+  (meals, workouts, dailyGoal) => {
+    const MAX_DAYS = 7;
+    if (!dailyGoal) return `0/${MAX_DAYS}`;
+
+    // Initialize the daily stats map
+    const dailyStats = new Map<string, { consumed: number; burned: number }>();
+
+    // Initialize the last 7 days
+    for (let i = 0; i < MAX_DAYS; i++) {
+      const day = startOfDay(subDays(new Date(), i)).toISOString();
+      dailyStats.set(day, { consumed: 0, burned: 0 });
+    }
+
+    // Process meals
+    meals.forEach((meal) => {
+      const day = startOfDay(new Date(meal.createdAt)).toISOString();
+      // If the day is in the map, add the calories to the stats
+      if (dailyStats.has(day)) {
+        const stats = dailyStats.get(day)!;
+        stats.consumed += meal.calories;
+        dailyStats.set(day, stats);
+      }
+    });
+
+    // Process workouts
+    workouts.forEach((workout) => {
+      const day = startOfDay(new Date(workout.createdAt)).toISOString();
+      // If the day is in the map, add the calories to the stats
+      if (dailyStats.has(day)) {
+        const stats = dailyStats.get(day)!;
+        stats.burned += workout.calories;
+        dailyStats.set(day, stats);
+      }
+    });
+
+    // Count the number of days on target
+    let daysOnTarget = 0;
+    dailyStats.forEach((stats) => {
+      // If the consumed calories and burned calories are 0, don't count it
+      if (stats.consumed === 0 && stats.burned === 0) return;
+
+      // Calculate the net calories
+      const netCalories = stats.consumed - stats.burned;
+
+      // If the net calories are less than or equal to the daily goal, increment the days on target
+      if (netCalories <= dailyGoal && netCalories > 0) {
+        daysOnTarget++;
+      }
+    });
+
+    return `${daysOnTarget}/${MAX_DAYS}`;
+  }
+);
