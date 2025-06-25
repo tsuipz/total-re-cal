@@ -10,6 +10,7 @@ import {
 import { selectAll as selectAllWorkouts } from '../workouts/workouts.selectors';
 import { selectTodaysTotalCalories as selectTodaysWorkoutsTotalCalories } from '@app/core/stores/workouts/workouts.selectors';
 import { selectCurrentUserDailyCaloriesGoal } from '../auth/auth.selectors';
+import { NetCaloriesData } from '@app/modules/dashboard/components/net-calories-line-chart/net-calories-line-chart.component';
 
 export const FEATURE_KEY = 'meals';
 
@@ -175,5 +176,65 @@ export const selectDaysOnTarget = createSelector(
     });
 
     return `${daysOnTarget}/${MAX_DAYS}`;
+  }
+);
+
+/**
+ * Select rolling 7-day net calories (with goal) for charting
+ */
+/**
+ * Selector that calculates rolling 7-day net calories data for charting
+ * Returns an array of daily data with net calories and goal values
+ */
+export const selectRolling7DayNetCalories = createSelector(
+  selectAll,
+  selectAllWorkouts,
+  selectCurrentUserDailyCaloriesGoal,
+  (meals, workouts, dailyGoal) => {
+    // Initialize data structures for tracking daily calories
+    const days: NetCaloriesData[] = [];
+    const mealsByDay = new Map<string, number>();
+    const workoutsByDay = new Map<string, number>();
+
+    // Initialize the last 7 days (from 6 days ago to today)
+    for (let i = 6; i >= 0; i--) {
+      const date = startOfDay(subDays(new Date(), i));
+      const key = date.toISOString();
+      const dayLabel = date.toLocaleDateString(undefined, { weekday: 'short' });
+
+      // Add day entry with initial values
+      days.push({ day: dayLabel, netCalories: 0, goal: dailyGoal });
+
+      // Initialize calorie tracking maps for this day
+      mealsByDay.set(key, 0);
+      workoutsByDay.set(key, 0);
+    }
+
+    // Aggregate meal calories by day
+    meals.forEach((meal) => {
+      const key = startOfDay(new Date(meal.createdAt)).toISOString();
+      if (mealsByDay.has(key)) {
+        mealsByDay.set(key, mealsByDay.get(key)! + meal.calories);
+      }
+    });
+
+    // Aggregate workout calories burned by day
+    workouts.forEach((workout) => {
+      const key = startOfDay(new Date(workout.createdAt)).toISOString();
+      if (workoutsByDay.has(key)) {
+        workoutsByDay.set(key, workoutsByDay.get(key)! + workout.calories);
+      }
+    });
+
+    // Calculate net calories for each day and return formatted data
+    return days.map((d, idx) => {
+      const date = startOfDay(subDays(new Date(), 6 - idx));
+      const key = date.toISOString();
+      return {
+        day: d.day,
+        netCalories: mealsByDay.get(key)! - workoutsByDay.get(key)!,
+        goal: dailyGoal,
+      };
+    });
   }
 );
