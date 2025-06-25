@@ -22,6 +22,7 @@ import { WorkoutsEffects } from './core/stores/workouts/workouts.effects';
 import { workoutsReducer } from './core/stores/workouts/workouts.reducers';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 const REDUCERS = {
   auth: authReducer,
@@ -45,5 +46,6 @@ export const appConfig: ApplicationConfig = {
     provideRouterStore(),
     provideNativeDateAdapter(),
     provideAnimations(),
+    provideCharts(withDefaultRegisterables()),
   ],
 };
