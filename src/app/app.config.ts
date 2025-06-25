@@ -21,6 +21,7 @@ import { mealsReducer } from './core/stores/meals/meals.reducers';
 import { WorkoutsEffects } from './core/stores/workouts/workouts.effects';
 import { workoutsReducer } from './core/stores/workouts/workouts.reducers';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 const REDUCERS = {
   auth: authReducer,
@@ -43,5 +44,6 @@ export const appConfig: ApplicationConfig = {
     provideEffects(EFFECTS),
     provideRouterStore(),
     provideNativeDateAdapter(),
+    provideAnimations(),
   ],
 };
