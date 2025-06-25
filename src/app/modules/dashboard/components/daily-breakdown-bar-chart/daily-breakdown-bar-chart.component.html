@@ -2,43 +2,38 @@
   <mat-card-header>
     <mat-card-title>
       <mat-icon>bar_chart</mat-icon>
-      Daily Breakdown
+      Weekly Trend
     </mat-card-title>
-    <mat-card-subtitle>Calorie distribution by meal type</mat-card-subtitle>
+    <mat-card-subtitle>Calories Consumed vs. Burned (Last 7 Days)</mat-card-subtitle>
   </mat-card-header>
 
   <mat-card-content>
-    <div class="chart-container">
-      <div class="chart-placeholder">
-        <mat-icon class="chart-icon">bar_chart</mat-icon>
-        <p>Bar chart visualization will be implemented in future tickets</p>
-      </div>
-    </div>
-
-    <div class="breakdown-stats">
-      <div class="stat-item">
-        <span class="stat-label">Total Calories:</span>
-        <span class="stat-value">{{ getTotalCalories() }}</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label">Largest Category:</span>
-        <span class="stat-value">{{ getLargestCategory() }}</span>
-      </div>
-    </div>
-
-    <div class="breakdown-list">
-      <div class="breakdown-item"
-           *ngFor="let item of breakdownData">
-        <div class="category-info">
-          <span class="category-name">{{ item.category }}</span>
-          <span class="category-calories">{{ item.calories }} cal</span>
+    <ng-container *ngIf="weeklyData$ | async as days">
+      <div *ngIf="days.length > 0; else noData"
+           class="weekly-bar-list">
+        <div class="bar-row"
+             *ngFor="let day of days">
+          <div class="bar-day">{{ day.day }}</div>
+          <div class="bar-group">
+            <div class="bar bar-intake"
+                 *ngIf="day.intake > 0"
+                 [style.width.%]="day.intake + day.burned > 0 ? (day.intake / (day.intake + day.burned)) * 100 : 0"
+                 [class.bar-empty]="day.intake === 0">
+              <ng-container *ngIf="day.intake > 0">{{ day.intake }}</ng-container>
+            </div>
+            <div class="bar bar-burned"
+                 *ngIf="day.burned > 0"
+                 [style.width.%]="day.intake + day.burned > 0 ? (day.burned / (day.intake + day.burned)) * 100 : 0"
+                 [class.bar-empty]="day.burned === 0">
+              <ng-container *ngIf="day.burned > 0">-{{ day.burned }}</ng-container>
+            </div>
+          </div>
+          <div class="bar-net">{{ day.net }}</div>
         </div>
-        <div class="progress-bar">
-          <div class="progress-fill"
-               [style.width.%]="item.percentage"></div>
-        </div>
-        <span class="percentage">{{ item.percentage }}%</span>
       </div>
-    </div>
+      <ng-template #noData>
+        <div class="no-data">No data for the last 7 days.</div>
+      </ng-template>
+    </ng-container>
   </mat-card-content>
 </mat-card>
