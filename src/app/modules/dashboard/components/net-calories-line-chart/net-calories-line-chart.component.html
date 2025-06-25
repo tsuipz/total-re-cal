@@ -9,24 +9,11 @@
   <mat-card-content>
     <div class="chart-container">
       <ng-container *ngIf="netCalories$ | async as netCaloriesData">
-        <ngx-charts-line-chart [scheme]="'fire'"
-                               [results]="toChartSeries(netCaloriesData)"
-                               [xAxis]="true"
-                               [yAxis]="true"
-                               [legend]="false"
-                               [showXAxisLabel]="true"
-                               [showYAxisLabel]="true"
-                               [xAxisLabel]="'Day'"
-                               [yAxisLabel]="'Net Calories'"
-                               [autoScale]="true"
-                               [animations]="true"
-                               [timeline]="false"
-                               [referenceLines]="[{ value: getGoalLine(netCaloriesData), name: 'Goal', color: '#bdbdbd' }]"
-                               [showGridLines]="true"
-                               [showRefLines]="true"
-                               [showRefLabels]="true"
-                               [yScaleMax]="getYScaleMax(netCaloriesData)">
-        </ngx-charts-line-chart>
+        <canvas baseChart
+                type="line"
+                [data]="lineChartData"
+                [options]="lineChartOptions">
+        </canvas>
       </ng-container>
     </div>
   </mat-card-content>
