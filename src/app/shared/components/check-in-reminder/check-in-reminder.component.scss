@@ -1,0 +1,154 @@
+.check-in-reminder {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  max-width: 400px;
+  width: 100%;
+}
+
+.reminder-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: none;
+
+  ::ng-deep .mat-mdc-card-content {
+    padding: 20px 20px 0 20px;
+  }
+
+  ::ng-deep .mat-mdc-card-actions {
+    padding: 0 20px 20px 20px;
+    margin: 0;
+  }
+}
+
+.reminder-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  .reminder-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: rgba(255, 255, 255, 0.9);
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .reminder-text {
+    flex: 1;
+
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+.reminder-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+
+  button {
+    border-radius: 8px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 12px;
+
+    mat-icon {
+      margin-right: 8px;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+
+    &[color="primary"] {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+
+      &:hover:not(:disabled) {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+    }
+
+    &:not([color="primary"]) {
+      background-color: transparent;
+      color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+
+      &:hover:not(:disabled) {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 600px) {
+  .check-in-reminder {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .reminder-card {
+    ::ng-deep .mat-mdc-card-content {
+      padding: 16px 16px 0 16px;
+    }
+
+    ::ng-deep .mat-mdc-card-actions {
+      padding: 0 16px 16px 16px;
+    }
+  }
+
+  .reminder-header {
+    gap: 12px;
+
+    .reminder-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    .reminder-text {
+      h3 {
+        font-size: 16px;
+      }
+
+      p {
+        font-size: 13px;
+      }
+    }
+  }
+
+  .reminder-actions {
+    flex-direction: column;
+    gap: 8px;
+
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}

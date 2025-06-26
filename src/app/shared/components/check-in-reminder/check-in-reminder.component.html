@@ -1,0 +1,30 @@
+<div *ngIf="checkInReminder$ | async as reminder"
+     class="check-in-reminder">
+  <mat-card class="reminder-card">
+    <mat-card-content>
+      <div class="reminder-header">
+        <mat-icon class="reminder-icon">schedule</mat-icon>
+        <div class="reminder-text">
+          <h3>{{ reminder.title }}</h3>
+          <p>{{ reminder.message }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions class="reminder-actions">
+      <button mat-button
+              color="primary"
+              (click)="onCheckIn()"
+              [disabled]="isLoading$ | async">
+        <mat-icon>scale</mat-icon>
+        Check In Now
+      </button>
+      <button mat-button
+              (click)="onDismiss()"
+              [disabled]="isLoading$ | async">
+        <mat-icon>close</mat-icon>
+        Dismiss
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
