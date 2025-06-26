@@ -1,0 +1,54 @@
+.insights-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  color: white;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.summary-label {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  margin-bottom: 4px;
+}
+
+.summary-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+
+  &.positive {
+    color: #4caf50;
+  }
+
+  &.warning {
+    color: #ff9800;
+  }
+
+  &.negative {
+    color: #f44336;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .insights-summary {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .summary-item {
+    flex-direction: row;
+    gap: 8px;
+  }
+}
