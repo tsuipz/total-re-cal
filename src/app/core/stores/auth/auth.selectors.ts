@@ -5,6 +5,7 @@ import {
   profileDataForCalculations,
   calculateDailyCalorieTarget,
 } from '@app/shared/utils/calories.util';
+import { WeightsSelectors } from '../weights';
 
 const FEATURE_KEY = 'auth';
 
@@ -42,10 +43,22 @@ export const selectCurrentUserPlan = createSelector(
   }
 );
 
+/**
+ * Get current weight from the latest weight check-in
+ */
+export const selectCurrentUserWeight = createSelector(
+  WeightsSelectors.selectLatestWeightCheckIn,
+  (latestCheckIn) => latestCheckIn?.weight || null
+);
+
+/**
+ * Get profile data for calculations using current weight from weights collection
+ */
 export const selectCurrentUserProfileData = createSelector(
   selectCurrentUser,
-  (user) => {
-    if (!user) {
+  selectCurrentUserWeight,
+  (user, currentWeight) => {
+    if (!user || currentWeight === null) {
       return null;
     }
 
@@ -53,12 +66,15 @@ export const selectCurrentUserProfileData = createSelector(
       user.gender,
       user.birthday,
       user.height,
-      user.currentWeight,
+      currentWeight,
       user.unitSystem
     );
   }
 );
 
+/**
+ * Calculate daily calorie goal using profile data and weight from weights collection
+ */
 export const selectCurrentUserDailyCaloriesGoal = createSelector(
   selectCurrentUserProfileData,
   selectCurrentUserPlan,

@@ -8,7 +8,7 @@ import * as MealsActions from './meals.actions';
 import * as WorkoutsActions from '../workouts/workouts.actions';
 import { MealsService } from '../../services/meals.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { WeightActions } from '../weight';
+import { WeightsActions } from '../weights';
 
 @Injectable()
 export class MealsEffects {
@@ -129,7 +129,7 @@ export class MealsEffects {
         of(
           MealsActions.loadMealsForToday({ userId }),
           WorkoutsActions.loadWorkoutsForToday({ userId }),
-          WeightActions.loadWeightHistory({ userId })
+          WeightsActions.loadWeightHistory({ userId })
         )
       )
     );

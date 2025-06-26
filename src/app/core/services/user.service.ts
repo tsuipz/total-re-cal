@@ -8,7 +8,6 @@ import {
   getDoc,
   setDoc,
   Timestamp,
-  updateDoc,
 } from '@angular/fire/firestore';
 import { from, map, Observable, of, switchMap, forkJoin, take } from 'rxjs';
 import { User } from '../models/interfaces';
@@ -69,34 +68,6 @@ export class UserService {
         // Save complete user profile to Firestore
         return from(setDoc(userDoc, completeUserProfile)).pipe(
           map(() => completeUserProfile)
-        );
-      })
-    );
-  }
-
-  /**
-   * Save user profile weight
-   * @param weight - number
-   * @returns - Observable of the saved weight
-   */
-  public saveUserProfileWeight(weight: number): Observable<number> {
-    const currentUser = this.afAuth.currentUser;
-    if (!currentUser) {
-      throw new Error('No authenticated user found');
-    }
-
-    const userDoc = doc(this.usersCollection, currentUser.uid);
-    const user$ = docData(userDoc) as Observable<User>;
-
-    return user$.pipe(
-      take(1),
-      switchMap((user) => {
-        if (!user) {
-          throw new Error('User not found');
-        }
-
-        return from(updateDoc(userDoc, { currentWeight: weight })).pipe(
-          map(() => weight)
         );
       })
     );

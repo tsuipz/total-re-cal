@@ -16,7 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { Store } from '@ngrx/store';
 import { UnitSystem } from '@app/core/models/types';
-import { WeightActions, WeightSelectors } from '@app/core/stores/weight';
+import { WeightsActions, WeightsSelectors } from '@app/core/stores/weights';
 import { filter, take, race } from 'rxjs';
 
 const MUI = [
@@ -57,10 +57,10 @@ export class WeightCheckInDialogComponent {
     ]),
   });
 
-  public isLoading$ = this.store.select(WeightSelectors.selectWeightIsLoading);
+  public isLoading$ = this.store.select(WeightsSelectors.selectWeightIsLoading);
   public isSubmitting = false;
   public previousWeight$ = this.store.select(
-    WeightSelectors.selectPreviousWeightCheckIn
+    WeightsSelectors.selectPreviousWeightCheckIn
   );
   public weightDifference: number | null = null;
   public weightUnit: string;
@@ -88,17 +88,17 @@ export class WeightCheckInDialogComponent {
     this.isSubmitting = true;
     const weight = this.form.controls.weight.value!;
 
-    this.store.dispatch(WeightActions.addWeightCheckIn({ weight }));
+    this.store.dispatch(WeightsActions.addWeightCheckIn({ weight }));
 
     // Create observables for success and error
     const success$ = this.store
-      .select(WeightSelectors.selectLatestWeightCheckIn)
+      .select(WeightsSelectors.selectLatestWeightCheckIn)
       .pipe(
         filter((checkIn) => checkIn !== null && checkIn.weight === weight),
         take(1)
       );
 
-    const error$ = this.store.select(WeightSelectors.selectWeightError).pipe(
+    const error$ = this.store.select(WeightsSelectors.selectWeightError).pipe(
       filter((error) => error !== null),
       take(1)
     );

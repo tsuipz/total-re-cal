@@ -18,7 +18,7 @@ import {
 } from '../models/interfaces';
 import { UserService } from './user.service';
 import { DateUtilsService } from './date-utils.service';
-import { WeightService } from './weight.service';
+import { WeightsService } from './weights.service';
 import { CheckInDay } from '../models/types';
 
 @Injectable({
@@ -28,7 +28,7 @@ export class NotificationService {
   private firestore = inject(Firestore);
   private userService = inject(UserService);
   private dateUtils = inject(DateUtilsService);
-  private weightService = inject(WeightService);
+  private weightsService = inject(WeightsService);
   private notificationsCollection = collection(this.firestore, 'notifications');
 
   /**
@@ -87,7 +87,7 @@ export class NotificationService {
   private hasCheckedInThisWeek(userId: string): Observable<boolean> {
     const weekRange = this.dateUtils.getWeekRange();
 
-    return this.weightService.getWeightHistory(userId).pipe(
+    return this.weightsService.getWeightHistory(userId).pipe(
       map((checkIns) => {
         return checkIns.some((checkIn) => {
           const checkInDate =
