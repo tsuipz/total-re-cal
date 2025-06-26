@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as AuthActions from './auth.actions';
 import { NotificationsActions } from '../notifications';
+import * as WeightsActions from '../weights/weights.actions';
 import { AuthService } from '@app/core/services/auth.service';
 import { from, switchMap, tap, of } from 'rxjs';
 import { mapResponse } from '@ngrx/operators';
@@ -109,6 +110,90 @@ export class AuthEffects {
   });
 
   /**
+   * Complete signup effect - Save user profile and initial weight check-in
+   */
+  public completeSignup$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AuthActions.completeSignup),
+      switchMap(({ user, initialWeight }) =>
+        this.userService.saveUserProfile(user).pipe(
+          mapResponse({
+            next: (savedUser) =>
+              AuthActions.completeSignupSuccess({
+                user: savedUser,
+                initialWeight,
+              }),
+            error: (error: HttpErrorResponse) =>
+              AuthActions.completeSignupFailure({ error }),
+          })
+        )
+      )
+    );
+  });
+
+  /**
+   * Complete signup success effect - Show success message and navigate
+   */
+  public completeSignupSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.completeSignupSuccess),
+        tap(() => {
+          this.snackBar.open('Profile created successfully!', 'Close', {
+            duration: 3000,
+          });
+          this.router.navigate(['/home']);
+        })
+      );
+    },
+    { dispatch: false }
+  );
+
+  /**
+   * Save initial weight after signup success
+   */
+  public saveInitialWeight$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AuthActions.completeSignupSuccess),
+      switchMap(({ initialWeight }) =>
+        of(WeightsActions.addWeightCheckIn({ weight: initialWeight }))
+      )
+    );
+  });
+
+  /**
+   * Reload user profile after initial weight is saved
+   */
+  public reloadUserProfileAfterSignup$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AuthActions.completeSignupSuccess),
+      switchMap(() => of(AuthActions.getUserProfile()))
+    );
+  });
+
+  /**
+   * Complete signup failure effect - Show error message
+   */
+  public completeSignupFailure$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(AuthActions.completeSignupFailure),
+        tap(({ error }) => {
+          this.snackBar.open(
+            error.error?.message || 'Failed to create profile',
+            'Close',
+            {
+              duration: 5000,
+              panelClass: 'error-snackbar',
+            }
+          );
+        })
+      );
+    },
+    { dispatch: false }
+  );
+
+  /**
    * Save User Profile Success effect - Show success message and navigate
    */
   public saveUserProfileSuccess$ = createEffect(
@@ -158,25 +243,6 @@ export class AuthEffects {
   );
 
   /**
-   * Save user profile weight effect
-   */
-  public saveUserProfileWeight$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(AuthActions.saveUserProfileWeight),
-      switchMap(({ weight }) =>
-        this.userService.saveUserProfileWeight(weight).pipe(
-          mapResponse({
-            next: (weight) =>
-              AuthActions.saveUserProfileWeightSuccess({ weight }),
-            error: (error: HttpErrorResponse) =>
-              AuthActions.saveUserProfileWeightFailure({ error }),
-          })
-        )
-      )
-    );
-  });
-
-  /**
    * Check for check-in reminder after user profile is loaded
    */
   public checkForCheckInReminder$ = createEffect(() => {
@@ -187,4 +253,10 @@ export class AuthEffects {
       )
     );
   });
+
+  // Note: Initial weight check-in will be handled differently
+  // We can either:
+  // 1. Store the initial weight temporarily during signup
+  // 2. Create a separate action for initial weight check-in
+  // 3. Handle it in the signup component directly
 }

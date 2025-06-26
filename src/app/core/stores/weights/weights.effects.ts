@@ -4,19 +4,17 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { mapResponse } from '@ngrx/operators';
 import { of } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import * as WeightActions from './weight.actions';
-import { NotificationsActions } from '../notifications';
-import { WeightService } from '../../services/weight.service';
+import * as WeightsActions from './weights.actions';
+import { NotificationsActions, NotificationsSelectors } from '../notifications';
+import { WeightsService } from '../../services/weights.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AuthActions } from '../auth';
 import { Store } from '@ngrx/store';
-import { NotificationsSelectors } from '../notifications';
 import { take } from 'rxjs/operators';
 
 @Injectable()
-export class WeightEffects {
+export class WeightsEffects {
   private actions$ = inject(Actions);
-  private weightService = inject(WeightService);
+  private weightsService = inject(WeightsService);
   private snackBar = inject(MatSnackBar);
   private store = inject(Store);
 
@@ -25,14 +23,14 @@ export class WeightEffects {
    */
   addWeightCheckIn$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(WeightActions.addWeightCheckIn),
+      ofType(WeightsActions.addWeightCheckIn),
       switchMap(({ weight }) =>
-        this.weightService.saveWeightCheckIn(weight).pipe(
+        this.weightsService.saveWeightCheckIn(weight).pipe(
           mapResponse({
             next: (weightCheckIn) =>
-              WeightActions.addWeightCheckInSuccess({ weightCheckIn }),
+              WeightsActions.addWeightCheckInSuccess({ weightCheckIn }),
             error: (error: HttpErrorResponse) =>
-              WeightActions.addWeightCheckInFailure({ error }),
+              WeightsActions.addWeightCheckInFailure({ error }),
           })
         )
       )
@@ -42,25 +40,32 @@ export class WeightEffects {
   /**
    * Add weight check-in success effect - Show success message
    */
-  addWeightCheckInSuccess$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(WeightActions.addWeightCheckInSuccess),
-      tap(({ weightCheckIn }) => {
-        this.snackBar.open(
-          `Weight check-in saved: ${weightCheckIn.weight} lbs`,
-          'Close',
-          {
-            duration: 3000,
-            horizontalPosition: 'end',
-            verticalPosition: 'top',
-          }
-        );
-      }),
-      map(({ weightCheckIn }) =>
-        AuthActions.saveUserProfileWeight({
-          weight: weightCheckIn.weight,
+  addWeightCheckInSuccess$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(WeightsActions.addWeightCheckInSuccess),
+        tap(({ weightCheckIn }) => {
+          this.snackBar.open(
+            `Weight check-in saved: ${weightCheckIn.weight} lbs`,
+            'Close',
+            {
+              duration: 3000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+            }
+          );
         })
-      ),
+      );
+    },
+    { dispatch: false }
+  );
+
+  /**
+   * Mark check-in reminder as completed when weight check-in is successful
+   */
+  markCheckInReminderCompleted$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(WeightsActions.addWeightCheckInSuccess),
       switchMap(() =>
         this.store
           .select(NotificationsSelectors.selectCheckInReminderNotification)
@@ -84,14 +89,14 @@ export class WeightEffects {
    */
   loadWeightHistory$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(WeightActions.loadWeightHistory),
+      ofType(WeightsActions.loadWeightHistory),
       switchMap(({ userId }) =>
-        this.weightService.getWeightHistory(userId).pipe(
+        this.weightsService.getWeightHistory(userId).pipe(
           mapResponse({
             next: (weightCheckIns) =>
-              WeightActions.loadWeightHistorySuccess({ weightCheckIns }),
+              WeightsActions.loadWeightHistorySuccess({ weightCheckIns }),
             error: (error: HttpErrorResponse) =>
-              WeightActions.loadWeightHistoryFailure({ error }),
+              WeightsActions.loadWeightHistoryFailure({ error }),
           })
         )
       )
@@ -103,14 +108,14 @@ export class WeightEffects {
    */
   loadLatestWeightCheckIn$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(WeightActions.loadLatestWeightCheckIn),
+      ofType(WeightsActions.loadLatestWeightCheckIn),
       switchMap(({ userId }) =>
-        this.weightService.getLatestWeightCheckIn(userId).pipe(
+        this.weightsService.getLatestWeightCheckIn(userId).pipe(
           mapResponse({
             next: (weightCheckIn) =>
-              WeightActions.loadLatestWeightCheckInSuccess({ weightCheckIn }),
+              WeightsActions.loadLatestWeightCheckInSuccess({ weightCheckIn }),
             error: (error: HttpErrorResponse) =>
-              WeightActions.loadLatestWeightCheckInFailure({ error }),
+              WeightsActions.loadLatestWeightCheckInFailure({ error }),
           })
         )
       )
@@ -122,18 +127,18 @@ export class WeightEffects {
    */
   loadWeightCheckInsByDateRange$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(WeightActions.loadWeightCheckInsByDateRange),
+      ofType(WeightsActions.loadWeightCheckInsByDateRange),
       switchMap(({ userId, startDate, endDate }) =>
-        this.weightService
+        this.weightsService
           .getWeightCheckInsInRange(userId, startDate, endDate)
           .pipe(
             mapResponse({
               next: (weightCheckIns) =>
-                WeightActions.loadWeightCheckInsByDateRangeSuccess({
+                WeightsActions.loadWeightCheckInsByDateRangeSuccess({
                   weightCheckIns,
                 }),
               error: (error: HttpErrorResponse) =>
-                WeightActions.loadWeightCheckInsByDateRangeFailure({ error }),
+                WeightsActions.loadWeightCheckInsByDateRangeFailure({ error }),
             })
           )
       )
@@ -145,13 +150,13 @@ export class WeightEffects {
    */
   clearWeightData$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(WeightActions.clearWeightData),
+      ofType(WeightsActions.clearWeightData),
       switchMap(() =>
         of(null).pipe(
           mapResponse({
-            next: () => WeightActions.clearWeightDataSuccess(),
+            next: () => WeightsActions.clearWeightDataSuccess(),
             error: (error: HttpErrorResponse) =>
-              WeightActions.clearWeightDataFailure({ error }),
+              WeightsActions.clearWeightDataFailure({ error }),
           })
         )
       )

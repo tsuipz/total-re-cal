@@ -18,25 +18,20 @@ import { DateUtilsService } from './date-utils.service';
 @Injectable({
   providedIn: 'root',
 })
-export class WeightService {
+export class WeightsService {
   private firestore = inject(Firestore);
   private userService = inject(UserService);
   private dateUtils = inject(DateUtilsService);
-  private weightCheckInsCollection = collection(
-    this.firestore,
-    'weightCheckIns'
-  );
+  private weightCheckInsCollection = collection(this.firestore, 'weights');
 
   /**
-   * Save a weight check-in to Firestore (without updating user profile)
+   * Save a weight check-in to Firestore
    * @param weight - The weight value
    * @returns Observable that completes when the check-in is saved
    */
   public saveWeightCheckIn(weight: number): Observable<WeightCheckIn> {
     return this.userService.getUserProfile().pipe(
       switchMap((currentUser) => {
-        currentUser.currentWeight = weight;
-
         if (!currentUser) {
           throw new Error('No authenticated user found');
         }
@@ -48,12 +43,7 @@ export class WeightService {
         };
 
         // Add the weight check-in to Firestore
-        const addCheckIn$ = from(
-          addDoc(this.weightCheckInsCollection, weightCheckIn)
-        );
-
-        // Combine both operations
-        return addCheckIn$.pipe(
+        return from(addDoc(this.weightCheckInsCollection, weightCheckIn)).pipe(
           take(1),
           map((addCheckIn) => {
             const newWeightCheckIn: WeightCheckIn = {
@@ -64,6 +54,33 @@ export class WeightService {
             return newWeightCheckIn;
           })
         );
+      })
+    );
+  }
+
+  /**
+   * Get the current weight for a user (from the most recent check-in)
+   * @param userId - The user ID
+   * @returns Observable of the current weight, or null if no check-ins exist
+   */
+  public getCurrentWeight(userId: string): Observable<number | null> {
+    return this.getLatestWeightCheckIn(userId).pipe(
+      map((latestCheckIn) => latestCheckIn?.weight || null)
+    );
+  }
+
+  /**
+   * Get the current weight for the current user
+   * @returns Observable of the current weight, or null if no check-ins exist
+   */
+  public getCurrentUserWeight(): Observable<number | null> {
+    return this.userService.getUserProfile().pipe(
+      take(1),
+      switchMap((user) => {
+        if (!user) {
+          throw new Error('No authenticated user found');
+        }
+        return this.getCurrentWeight(user.uid);
       })
     );
   }

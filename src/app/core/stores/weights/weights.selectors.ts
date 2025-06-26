@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { State, adapter } from './weight.reducers';
+import { State, adapter } from './weights.reducers';
 import {
   isSameDay,
   startOfDay,
@@ -8,7 +8,7 @@ import {
   subDays,
 } from 'date-fns';
 
-export const FEATURE_KEY = 'weight';
+export const FEATURE_KEY = 'weights';
 
 export const selectWeightState = createFeatureSelector<State>(FEATURE_KEY);
 

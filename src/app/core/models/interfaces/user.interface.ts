@@ -9,7 +9,6 @@ export interface User {
   gender: Gender;
   birthday: Date;
   height: number; // in cm or inches
-  currentWeight: number; // in lbs or kg
   goalWeight: number;
 
   // Preferences

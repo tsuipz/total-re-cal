@@ -77,17 +77,20 @@ export const saveUserProfileFailure = createAction(
   props<{ error: HttpErrorResponse }>()
 );
 
-export const saveUserProfileWeight = createAction(
-  '[Auth] Save User Profile Weight',
-  props<{ weight: number }>()
+/**
+ * Complete signup actions (user profile + initial weight)
+ */
+export const completeSignup = createAction(
+  '[Auth] Complete Signup',
+  props<{ user: User; initialWeight: number }>()
 );
 
-export const saveUserProfileWeightSuccess = createAction(
-  '[Auth] Save User Profile Weight Success',
-  props<{ weight: number }>()
+export const completeSignupSuccess = createAction(
+  '[Auth] Complete Signup Success',
+  props<{ user: User; initialWeight: number }>()
 );
 
-export const saveUserProfileWeightFailure = createAction(
-  '[Auth] Save User Profile Weight Failure',
+export const completeSignupFailure = createAction(
+  '[Auth] Complete Signup Failure',
   props<{ error: HttpErrorResponse }>()
 );

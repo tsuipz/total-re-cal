@@ -102,15 +102,19 @@ export class SignupComponent implements OnDestroy {
       gender: profile.gender,
       birthday: profile.birthday,
       height: profile.height,
-      currentWeight: profile.currentWeight,
       unitSystem: profile.unitSystem,
       goalWeight: plan.goalWeight,
       goalPlan: plan.goalPlan,
       checkInDay: checkIn.checkInDay,
     };
 
-    // Dispatch action to save user profile
-    this.store.dispatch(AuthActions.saveUserProfile({ user: userProfile }));
+    // Dispatch complete signup action (user profile + initial weight)
+    this.store.dispatch(
+      AuthActions.completeSignup({
+        user: userProfile,
+        initialWeight: profile.currentWeight,
+      })
+    );
   }
 
   get stepTitle(): string {

@@ -20,8 +20,8 @@ import { MealsEffects } from './core/stores/meals/meals.effects';
 import { mealsReducer } from './core/stores/meals/meals.reducers';
 import { WorkoutsEffects } from './core/stores/workouts/workouts.effects';
 import { workoutsReducer } from './core/stores/workouts/workouts.reducers';
-import { WeightEffects } from './core/stores/weight/weight.effects';
-import { weightReducer } from './core/stores/weight/weight.reducers';
+import { WeightsEffects } from './core/stores/weights/weights.effects';
+import { weightsReducer } from './core/stores/weights/weights.reducers';
 import { NotificationsEffects } from './core/stores/notifications/notifications.effects';
 import { notificationsReducer } from './core/stores/notifications/notifications.reducer';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -32,7 +32,7 @@ const REDUCERS = {
   auth: authReducer,
   meals: mealsReducer,
   workouts: workoutsReducer,
-  weight: weightReducer,
+  weights: weightsReducer,
   notifications: notificationsReducer,
   router: routerReducer,
 };
@@ -41,7 +41,7 @@ const EFFECTS = [
   AuthEffects,
   MealsEffects,
   WorkoutsEffects,
-  WeightEffects,
+  WeightsEffects,
   NotificationsEffects,
 ];
 

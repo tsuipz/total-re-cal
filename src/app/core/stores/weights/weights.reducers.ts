@@ -1,7 +1,7 @@
 import { WeightCheckIn } from '@app/core/models/interfaces';
 import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import * as WeightActions from './weight.actions';
+import * as WeightsActions from './weights.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export const adapter: EntityAdapter<WeightCheckIn> =
@@ -24,13 +24,13 @@ export const initialState: State = adapter.getInitialState({
   previousWeightCheckIn: null,
 });
 
-export const weightReducer = createReducer(
+export const weightsReducer = createReducer(
   initialState,
   /**
    * Add weight check-in actions
    */
   on(
-    WeightActions.addWeightCheckIn,
+    WeightsActions.addWeightCheckIn,
     (state): State => ({
       ...state,
       isLoading: true,
@@ -38,7 +38,7 @@ export const weightReducer = createReducer(
     })
   ),
   on(
-    WeightActions.addWeightCheckInSuccess,
+    WeightsActions.addWeightCheckInSuccess,
     (state, { weightCheckIn }): State => {
       // Update the latest weight check-in
       const newLatestWeightCheckIn = weightCheckIn;
@@ -54,7 +54,7 @@ export const weightReducer = createReducer(
     }
   ),
   on(
-    WeightActions.addWeightCheckInFailure,
+    WeightsActions.addWeightCheckInFailure,
     (state, { error }): State => ({
       ...state,
       isLoading: false,
@@ -66,7 +66,7 @@ export const weightReducer = createReducer(
    * Load weight history actions
    */
   on(
-    WeightActions.loadWeightHistory,
+    WeightsActions.loadWeightHistory,
     (state): State => ({
       ...state,
       isLoading: true,
@@ -74,7 +74,7 @@ export const weightReducer = createReducer(
     })
   ),
   on(
-    WeightActions.loadWeightHistorySuccess,
+    WeightsActions.loadWeightHistorySuccess,
     (state, { weightCheckIns }): State => {
       // Set the latest and previous weight check-ins based on the loaded data
       const sortedCheckIns = [...weightCheckIns].sort(
@@ -93,7 +93,7 @@ export const weightReducer = createReducer(
     }
   ),
   on(
-    WeightActions.loadWeightHistoryFailure,
+    WeightsActions.loadWeightHistoryFailure,
     (state, { error }): State => ({
       ...state,
       isLoading: false,
@@ -105,7 +105,7 @@ export const weightReducer = createReducer(
    * Load latest weight check-in actions
    */
   on(
-    WeightActions.loadLatestWeightCheckIn,
+    WeightsActions.loadLatestWeightCheckIn,
     (state): State => ({
       ...state,
       isLoading: true,
@@ -113,7 +113,7 @@ export const weightReducer = createReducer(
     })
   ),
   on(
-    WeightActions.loadLatestWeightCheckInSuccess,
+    WeightsActions.loadLatestWeightCheckInSuccess,
     (state, { weightCheckIn }): State => ({
       ...state,
       isLoading: false,
@@ -122,7 +122,7 @@ export const weightReducer = createReducer(
     })
   ),
   on(
-    WeightActions.loadLatestWeightCheckInFailure,
+    WeightsActions.loadLatestWeightCheckInFailure,
     (state, { error }): State => ({
       ...state,
       isLoading: false,
@@ -134,7 +134,7 @@ export const weightReducer = createReducer(
    * Load weight check-ins by date range actions
    */
   on(
-    WeightActions.loadWeightCheckInsByDateRange,
+    WeightsActions.loadWeightCheckInsByDateRange,
     (state): State => ({
       ...state,
       isLoading: true,
@@ -142,7 +142,7 @@ export const weightReducer = createReducer(
     })
   ),
   on(
-    WeightActions.loadWeightCheckInsByDateRangeSuccess,
+    WeightsActions.loadWeightCheckInsByDateRangeSuccess,
     (state, { weightCheckIns }): State => {
       // Add the weight check-ins to the existing state without replacing
       return adapter.addMany(weightCheckIns, {
@@ -153,7 +153,7 @@ export const weightReducer = createReducer(
     }
   ),
   on(
-    WeightActions.loadWeightCheckInsByDateRangeFailure,
+    WeightsActions.loadWeightCheckInsByDateRangeFailure,
     (state, { error }): State => ({
       ...state,
       isLoading: false,
@@ -165,14 +165,14 @@ export const weightReducer = createReducer(
    * Clear weight data actions
    */
   on(
-    WeightActions.clearWeightData,
+    WeightsActions.clearWeightData,
     (state): State => ({
       ...state,
       isLoading: true,
       error: null,
     })
   ),
-  on(WeightActions.clearWeightDataSuccess, (state): State => {
+  on(WeightsActions.clearWeightDataSuccess, (state): State => {
     return adapter.removeAll({
       ...state,
       isLoading: false,
@@ -182,7 +182,7 @@ export const weightReducer = createReducer(
     });
   }),
   on(
-    WeightActions.clearWeightDataFailure,
+    WeightsActions.clearWeightDataFailure,
     (state, { error }): State => ({
       ...state,
       isLoading: false,
