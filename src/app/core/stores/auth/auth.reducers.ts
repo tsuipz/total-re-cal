@@ -55,5 +55,28 @@ export const authReducer = createReducer(
   on(AuthActions.saveUserProfileSuccess, (state, { user }): State => {
     return adapter.upsertOne(user, { ...state, currentUserId: user.uid });
   }),
-  on(AuthActions.saveUserProfileFailure, (state): State => ({ ...state }))
+  on(AuthActions.saveUserProfileFailure, (state): State => ({ ...state })),
+  /**
+   * Save user profile weight actions
+   */
+  on(AuthActions.saveUserProfileWeight, (state): State => ({ ...state })),
+  on(AuthActions.saveUserProfileWeightSuccess, (state, { weight }): State => {
+    const currentUserId = state.currentUserId;
+    if (!currentUserId) {
+      return state;
+    }
+
+    const currentUser = state.entities[currentUserId];
+    if (!currentUser) {
+      return state;
+    }
+
+    const user: User = {
+      ...currentUser,
+      currentWeight: weight,
+    };
+
+    return adapter.upsertOne(user, state);
+  }),
+  on(AuthActions.saveUserProfileWeightFailure, (state): State => ({ ...state }))
 );
