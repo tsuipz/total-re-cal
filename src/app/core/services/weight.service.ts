@@ -7,12 +7,13 @@ import {
   where,
   orderBy,
   addDoc,
-  doc,
-  updateDoc,
+  limit,
+  Timestamp,
 } from '@angular/fire/firestore';
-import { Observable, map, switchMap, from, forkJoin } from 'rxjs';
-import { User, WeightCheckIn } from '../models/interfaces';
+import { Observable, map, switchMap, from, take } from 'rxjs';
+import { WeightCheckIn } from '../models/interfaces';
 import { UserService } from './user.service';
+import { DateUtilsService } from './date-utils.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,17 +21,18 @@ import { UserService } from './user.service';
 export class WeightService {
   private firestore = inject(Firestore);
   private userService = inject(UserService);
+  private dateUtils = inject(DateUtilsService);
   private weightCheckInsCollection = collection(
     this.firestore,
     'weightCheckIns'
   );
 
   /**
-   * Log a weight check-in for the current user
+   * Save a weight check-in to Firestore (without updating user profile)
    * @param weight - The weight value
    * @returns Observable that completes when the check-in is saved
    */
-  public logWeightCheckIn(weight: number): Observable<User> {
+  public saveWeightCheckIn(weight: number): Observable<WeightCheckIn> {
     return this.userService.getUserProfile().pipe(
       switchMap((currentUser) => {
         currentUser.currentWeight = weight;
@@ -42,7 +44,7 @@ export class WeightService {
         const weightCheckIn: Omit<WeightCheckIn, 'id'> = {
           userId: currentUser.uid,
           weight,
-          date: new Date().toISOString(),
+          createdAt: new Date(),
         };
 
         // Add the weight check-in to Firestore
@@ -50,17 +52,17 @@ export class WeightService {
           addDoc(this.weightCheckInsCollection, weightCheckIn)
         );
 
-        // Update the user's current weight in their profile
-        const userDoc = doc(this.firestore, 'users', currentUser.uid);
-        const updateUser$ = from(
-          updateDoc(userDoc, {
-            currentWeight: weight,
-          })
-        );
-
         // Combine both operations
-        return forkJoin([addCheckIn$, updateUser$]).pipe(
-          map(() => currentUser)
+        return addCheckIn$.pipe(
+          take(1),
+          map((addCheckIn) => {
+            const newWeightCheckIn: WeightCheckIn = {
+              ...weightCheckIn,
+              id: addCheckIn.id,
+            };
+
+            return newWeightCheckIn;
+          })
         );
       })
     );
@@ -75,16 +77,18 @@ export class WeightService {
     const weightQuery = query(
       this.weightCheckInsCollection,
       where('userId', '==', userId),
-      orderBy('date', 'desc')
+      orderBy('createdAt', 'desc')
     );
 
     return collectionData(weightQuery, { idField: 'id' }).pipe(
+      take(1),
       map((docs) => {
         return (docs as WeightCheckIn[]).map((doc) => ({
-          id: doc.id,
-          userId: doc.userId,
-          weight: doc.weight,
-          date: doc.date,
+          ...doc,
+          createdAt:
+            doc.createdAt instanceof Timestamp
+              ? doc.createdAt.toDate()
+              : new Date(doc.createdAt),
         }));
       })
     );
@@ -96,11 +100,117 @@ export class WeightService {
    */
   public getCurrentUserWeightHistory(): Observable<WeightCheckIn[]> {
     return this.userService.getUserProfile().pipe(
+      take(1),
       switchMap((user) => {
         if (!user) {
           throw new Error('No authenticated user found');
         }
         return this.getWeightHistory(user.uid);
+      })
+    );
+  }
+
+  /**
+   * Get the most recent weight check-in for a user
+   * @param userId - The user ID
+   * @returns Observable of the most recent weight check-in
+   */
+  public getLatestWeightCheckIn(
+    userId: string
+  ): Observable<WeightCheckIn | null> {
+    const weightCheckInQuery = query(
+      this.weightCheckInsCollection,
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc'),
+      limit(1)
+    );
+
+    return collectionData(weightCheckInQuery, { idField: 'id' }).pipe(
+      take(1),
+      map((docs) => {
+        if (docs.length === 0) {
+          return null;
+        }
+
+        const doc = docs[0] as WeightCheckIn;
+        return {
+          ...doc,
+          createdAt:
+            doc.createdAt instanceof Timestamp
+              ? doc.createdAt.toDate()
+              : new Date(doc.createdAt),
+        };
+      })
+    );
+  }
+
+  /**
+   * Get the previous weight check-in (second most recent) for a user
+   * @param userId - The user ID
+   * @returns Observable of the previous weight check-in
+   */
+  public getPreviousWeightCheckIn(
+    userId: string
+  ): Observable<WeightCheckIn | null> {
+    const weightCheckInQuery = query(
+      this.weightCheckInsCollection,
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc'),
+      limit(2)
+    );
+
+    return collectionData(weightCheckInQuery, { idField: 'id' }).pipe(
+      take(1),
+      map((docs) => {
+        if (docs.length < 2) {
+          return null;
+        }
+
+        const doc = docs[1] as WeightCheckIn; // Get the second most recent
+        return {
+          ...doc,
+          createdAt:
+            doc.createdAt instanceof Timestamp
+              ? doc.createdAt.toDate()
+              : new Date(doc.createdAt),
+        };
+      })
+    );
+  }
+
+  /**
+   * Get weight check-ins for a specific date range
+   * @param userId - The user ID
+   * @param startDate - Start date
+   * @param endDate - End date
+   * @returns Observable of weight check-ins in the date range
+   */
+  public getWeightCheckInsInRange(
+    userId: string,
+    startDate: Date,
+    endDate: Date
+  ): Observable<WeightCheckIn[]> {
+    const startTimestamp = this.dateUtils.getStartOfDay(startDate);
+    const endTimestamp = this.dateUtils.getEndOfDay(endDate);
+
+    const weightCheckInQuery = query(
+      this.weightCheckInsCollection,
+      where('userId', '==', userId),
+      where('createdAt', '>=', startTimestamp),
+      where('createdAt', '<=', endTimestamp),
+      orderBy('createdAt', 'desc')
+    );
+
+    return collectionData(weightCheckInQuery, { idField: 'id' }).pipe(
+      take(1),
+      map((docs) => {
+        return (docs as WeightCheckIn[]).map((doc) => ({
+          ...doc,
+          createdAt:
+            doc.createdAt instanceof Timestamp
+              ? doc.createdAt.toDate()
+              : new Date(doc.createdAt),
+        }));
       })
     );
   }

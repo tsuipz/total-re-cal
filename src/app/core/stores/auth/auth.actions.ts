@@ -76,3 +76,18 @@ export const saveUserProfileFailure = createAction(
   '[Auth] Save User Profile Failure',
   props<{ error: HttpErrorResponse }>()
 );
+
+export const saveUserProfileWeight = createAction(
+  '[Auth] Save User Profile Weight',
+  props<{ weight: number }>()
+);
+
+export const saveUserProfileWeightSuccess = createAction(
+  '[Auth] Save User Profile Weight Success',
+  props<{ weight: number }>()
+);
+
+export const saveUserProfileWeightFailure = createAction(
+  '[Auth] Save User Profile Weight Failure',
+  props<{ error: HttpErrorResponse }>()
+);

@@ -60,7 +60,7 @@ export class AuthEffects {
     return this.actions$.pipe(
       ofType(AuthActions.getUserProfile),
       switchMap(() =>
-        from(this.userService.getUserProfile()).pipe(
+        this.userService.getUserProfile().pipe(
           mapResponse({
             next: (user) => AuthActions.getUserProfileSuccess({ user }),
             error: (error: HttpErrorResponse) =>
@@ -78,7 +78,7 @@ export class AuthEffects {
     return this.actions$.pipe(
       ofType(AuthActions.loadUsersByIds),
       switchMap(({ userIds }) =>
-        from(this.userService.getUsersByIds(userIds)).pipe(
+        this.userService.getUsersByIds(userIds).pipe(
           mapResponse({
             next: (users) => AuthActions.loadUsersByIdsSuccess({ users }),
             error: (error: HttpErrorResponse) =>
@@ -96,7 +96,7 @@ export class AuthEffects {
     return this.actions$.pipe(
       ofType(AuthActions.saveUserProfile),
       switchMap(({ user }) =>
-        from(this.userService.saveUserProfile(user)).pipe(
+        this.userService.saveUserProfile(user).pipe(
           mapResponse({
             next: (user) => AuthActions.saveUserProfileSuccess({ user }),
             error: (error: HttpErrorResponse) =>
@@ -155,4 +155,23 @@ export class AuthEffects {
     },
     { dispatch: false }
   );
+
+  /**
+   * Save user profile weight effect
+   */
+  public saveUserProfileWeight$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AuthActions.saveUserProfileWeight),
+      switchMap(({ weight }) =>
+        this.userService.saveUserProfileWeight(weight).pipe(
+          mapResponse({
+            next: (weight) =>
+              AuthActions.saveUserProfileWeightSuccess({ weight }),
+            error: (error: HttpErrorResponse) =>
+              AuthActions.saveUserProfileWeightFailure({ error }),
+          })
+        )
+      )
+    );
+  });
 }

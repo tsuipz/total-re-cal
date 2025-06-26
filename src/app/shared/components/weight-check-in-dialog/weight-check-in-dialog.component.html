@@ -1,0 +1,87 @@
+<h2 mat-dialog-title>
+  <mat-icon>monitor_weight</mat-icon>
+  Weekly Weight Check-In
+</h2>
+
+<mat-dialog-content>
+  <div class="weight-check-in-content">
+    <!-- Previous Weight Display -->
+    <mat-card *ngIf="(isLoading$ | async) === false && (previousWeight$ | async)"
+              class="previous-weight-card">
+      <mat-card-content>
+        <div class="previous-weight-info">
+          <span class="label">Previous Weight:</span>
+          <span class="value">{{ (previousWeight$ | async)?.weight }} {{ weightUnit }}</span>
+          <span class="date">({{ (previousWeight$ | async)?.createdAt | date:'MMM d, y' }})</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading$ | async"
+         class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading previous weight...</p>
+    </div>
+
+    <!-- Weight Input Form -->
+    <form [formGroup]="form"
+          class="weight-form">
+      <mat-form-field appearance="outline"
+                      class="full-width">
+        <mat-label>Current Weight ({{ weightUnit }})</mat-label>
+        <input matInput
+               type="number"
+               formControlName="weight"
+               placeholder="Enter your current weight"
+               (input)="onWeightChange()"
+               min="50"
+               max="500"
+               step="0.1">
+        <mat-error *ngIf="form.controls.weight.hasError('required')">
+          Weight is required
+        </mat-error>
+        <mat-error *ngIf="form.controls.weight.hasError('min')">
+          Weight must be at least 50 {{ weightUnit }}
+        </mat-error>
+        <mat-error *ngIf="form.controls.weight.hasError('max')">
+          Weight must be less than 500 {{ weightUnit }}
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Weight Difference Display -->
+      <div *ngIf="weightDifference !== null"
+           class="weight-difference">
+        <mat-icon [color]="getWeightDifferenceColor()">
+          {{ weightDifference > 0 ? 'trending_up' : 'trending_down' }}
+        </mat-icon>
+        <span [class]="getWeightDifferenceColor()">
+          {{ getWeightDifferenceText() }}
+        </span>
+      </div>
+    </form>
+
+    <!-- First Time Check-in Message -->
+    <div *ngIf="(isLoading$ | async) === false && (previousWeight$ | async) === null"
+         class="first-check-in">
+      <mat-icon>celebration</mat-icon>
+      <p>Welcome to your first weight check-in! This will help us track your progress.</p>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button
+          (click)="onCancel()"
+          [disabled]="isSubmitting">
+    Cancel
+  </button>
+  <button mat-flat-button
+          color="primary"
+          (click)="onSubmit()"
+          [disabled]="form.invalid || isSubmitting">
+    <mat-spinner *ngIf="isSubmitting"
+                 diameter="20"></mat-spinner>
+    <span *ngIf="!isSubmitting">Save Weight</span>
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,127 @@
+.weight-check-in-content {
+  padding-top: 0.5rem;
+  min-width: 400px;
+  max-width: 500px;
+}
+
+.previous-weight-card {
+  margin-bottom: 24px;
+  background-color: #f5f5f5;
+  border-left: 4px solid #2196f3;
+
+  .previous-weight-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    .label {
+      font-weight: 500;
+      color: #666;
+    }
+
+    .value {
+      font-weight: 600;
+      font-size: 1.1em;
+      color: #2196f3;
+    }
+
+    .date {
+      color: #999;
+      font-size: 0.9em;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  color: #666;
+
+  p {
+    margin: 0;
+  }
+}
+
+.weight-form {
+  margin-bottom: 24px;
+
+  .full-width {
+    width: 100%;
+  }
+}
+
+.weight-difference {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+
+  &.success {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+  }
+
+  &.warn {
+    background-color: #fff3e0;
+    color: #f57c00;
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  span {
+    font-weight: 500;
+  }
+}
+
+.first-check-in {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: #e3f2fd;
+  border-radius: 8px;
+  color: #1976d2;
+
+  mat-icon {
+    color: #1976d2;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.95em;
+  }
+}
+
+mat-dialog-actions {
+  padding-top: 16px;
+  margin-bottom: 0;
+
+  button {
+    min-width: 100px;
+  }
+}
+
+// Responsive design
+@media (max-width: 600px) {
+  .weight-check-in-content {
+    min-width: 300px;
+    max-width: 100%;
+  }
+
+  .previous-weight-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
