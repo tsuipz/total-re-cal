@@ -1,8 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as AuthActions from './auth.actions';
+import { NotificationsActions } from '../notifications';
 import { AuthService } from '@app/core/services/auth.service';
-import { from, switchMap, tap } from 'rxjs';
+import { from, switchMap, tap, of } from 'rxjs';
 import { mapResponse } from '@ngrx/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from '@app/core/services/user.service';
@@ -171,6 +172,18 @@ export class AuthEffects {
               AuthActions.saveUserProfileWeightFailure({ error }),
           })
         )
+      )
+    );
+  });
+
+  /**
+   * Check for check-in reminder after user profile is loaded
+   */
+  public checkForCheckInReminder$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AuthActions.getUserProfileSuccess),
+      switchMap(({ user }) =>
+        of(NotificationsActions.checkForCheckInReminder({ userId: user.uid }))
       )
     );
   });

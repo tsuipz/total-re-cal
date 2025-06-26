@@ -5,15 +5,20 @@ import { mapResponse } from '@ngrx/operators';
 import { of } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as WeightActions from './weight.actions';
+import { NotificationsActions } from '../notifications';
 import { WeightService } from '../../services/weight.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthActions } from '../auth';
+import { Store } from '@ngrx/store';
+import { NotificationsSelectors } from '../notifications';
+import { take } from 'rxjs/operators';
 
 @Injectable()
 export class WeightEffects {
   private actions$ = inject(Actions);
   private weightService = inject(WeightService);
   private snackBar = inject(MatSnackBar);
+  private store = inject(Store);
 
   /**
    * Add weight check-in effect
@@ -55,6 +60,21 @@ export class WeightEffects {
         AuthActions.saveUserProfileWeight({
           weight: weightCheckIn.weight,
         })
+      ),
+      switchMap(() =>
+        this.store
+          .select(NotificationsSelectors.selectCheckInReminderNotification)
+          .pipe(
+            take(1),
+            map((reminder) => {
+              if (reminder) {
+                return NotificationsActions.markNotificationCompleted({
+                  notificationId: reminder.id,
+                });
+              }
+              return { type: 'NO_ACTION' };
+            })
+          )
       )
     );
   });

@@ -22,6 +22,8 @@ import { WorkoutsEffects } from './core/stores/workouts/workouts.effects';
 import { workoutsReducer } from './core/stores/workouts/workouts.reducers';
 import { WeightEffects } from './core/stores/weight/weight.effects';
 import { weightReducer } from './core/stores/weight/weight.reducers';
+import { NotificationsEffects } from './core/stores/notifications/notifications.effects';
+import { notificationsReducer } from './core/stores/notifications/notifications.reducer';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
@@ -31,10 +33,17 @@ const REDUCERS = {
   meals: mealsReducer,
   workouts: workoutsReducer,
   weight: weightReducer,
+  notifications: notificationsReducer,
   router: routerReducer,
 };
 
-const EFFECTS = [AuthEffects, MealsEffects, WorkoutsEffects, WeightEffects];
+const EFFECTS = [
+  AuthEffects,
+  MealsEffects,
+  WorkoutsEffects,
+  WeightEffects,
+  NotificationsEffects,
+];
 
 export const appConfig: ApplicationConfig = {
   providers: [
