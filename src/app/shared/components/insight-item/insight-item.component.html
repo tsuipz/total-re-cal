@@ -1,0 +1,20 @@
+<article class="insight-item">
+  <header class="insight-header">
+    <mat-icon class="insight-icon"
+              [style.color]="getInsightColor(insight.type)">
+      {{ insight.icon }}
+    </mat-icon>
+    <div class="insight-title">{{ insight.title }}</div>
+  </header>
+
+  <main class="insight-description">
+    {{ insight.description }}
+  </main>
+
+  <footer class="insight-metric">
+    <mat-chip class="metric-chip"
+              [style.background-color]="getInsightColor(insight.type) + '20'">
+      {{ insight.metric }}
+    </mat-chip>
+  </footer>
+</article>

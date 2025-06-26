@@ -180,6 +180,17 @@ export const selectDaysOnTarget = createSelector(
 );
 
 /**
+ * Selector for weekly insights component: last 7 days data in DailyCaloriesData format
+ */
+export const selectWeeklyDataForInsights = createSelector(
+  selectAll,
+  selectAllWorkouts,
+  (meals, workouts) => {
+    return getLast7DaysAggregates(meals, workouts);
+  }
+);
+
+/**
  * Select rolling 7-day net calories (with goal) for charting
  */
 /**
@@ -187,12 +198,10 @@ export const selectDaysOnTarget = createSelector(
  * Returns an array of daily data with net calories and goal values
  */
 export const selectRolling7DayNetCalories = createSelector(
-  selectAll,
-  selectAllWorkouts,
+  selectWeeklyDataForInsights,
   selectCurrentUserDailyCaloriesGoal,
-  (meals, workouts, dailyGoal) => {
-    const days = getLast7DaysAggregates(meals, workouts);
-    return days.map((d) => ({
+  (weeklyData, dailyGoal) => {
+    return weeklyData.map((d) => ({
       day: d.day,
       netCalories: d.intake - d.burned,
       goal: dailyGoal,
@@ -204,11 +213,9 @@ export const selectRolling7DayNetCalories = createSelector(
  * Selector for grouped bar chart: last 7 days, intake, burned, net, and max value for scaling
  */
 export const selectWeeklyIntakeBurnedBarChart = createSelector(
-  selectAll,
-  selectAllWorkouts,
-  (meals, workouts) => {
-    const days = getLast7DaysAggregates(meals, workouts);
-    return days.map((d) => ({
+  selectWeeklyDataForInsights,
+  (weeklyData) => {
+    return weeklyData.map((d) => ({
       day: d.day,
       intake: d.intake,
       burned: d.burned,

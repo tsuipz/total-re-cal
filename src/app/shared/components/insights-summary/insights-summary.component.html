@@ -1,0 +1,19 @@
+<section class="insights-summary">
+  <article class="summary-item">
+    <span class="summary-label">Overall Score:</span>
+    <span class="summary-value">{{ getOverallGrade() }}</span>
+  </article>
+  <article class="summary-item">
+    <span class="summary-label">Days on Target:</span>
+    <span class="summary-value">{{ summaryData.daysOnTarget }}/7</span>
+  </article>
+  <article class="summary-item">
+    <span class="summary-label">Trend:</span>
+    <span class="summary-value"
+          [class.positive]="summaryData.consistencyScore >= 70"
+          [class.warning]="summaryData.consistencyScore >= 50 && summaryData.consistencyScore < 70"
+          [class.negative]="summaryData.consistencyScore < 50">
+      {{ getTrendIcon() }} {{ getTrendText() }}
+    </span>
+  </article>
+</section>
